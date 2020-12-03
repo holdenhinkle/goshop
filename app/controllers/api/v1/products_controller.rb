@@ -1,11 +1,11 @@
 module Api
   module V1
     class ProductsController < ApplicationController
-      before_action :set_product, only: [:show, :update, :delete]
+      before_action :set_product, only: [:show, :update, :destroy]
 
       def index
         products = Product.all
-        
+
         render json: ProductSerializer.new(products).serializable_hash.to_json
       end
 
@@ -28,6 +28,14 @@ module Api
           render json: ProductSerializer.new(@product).serializable_hash.to_json
         else
           render json: { error: @product.errors.messages }, status: 422
+        end
+      end
+
+      def destroy
+        if @product.destroy
+          head :no_content
+        else
+          render json: { errors: @product.errors }, status: 422
         end
       end
 
