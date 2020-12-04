@@ -9,4 +9,7 @@ class Product < ApplicationRecord
 
   extend FriendlyId
   friendly_id :name, use: :slugged
+
+  has_many :categories_products
+  has_many :categories, through: :categories_products
 end
