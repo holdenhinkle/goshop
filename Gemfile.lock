@@ -65,6 +65,8 @@ GEM
     diff-lcs (1.4.4)
     erubi (1.10.0)
     ffi (1.13.1)
+    friendly_id (5.4.1)
+      activerecord (>= 4.0.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     i18n (1.8.5)
@@ -173,6 +175,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
+  friendly_id (~> 5.4, >= 5.4.1)
   jsonapi-serializer (~> 2.1)
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
