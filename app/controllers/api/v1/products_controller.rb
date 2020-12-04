@@ -46,16 +46,17 @@ module Api
       end
 
       def product_params
-        params.require(:product)
-          .permit(:name,
-                  :description,
-                  :image,
-                  :product_type,
-                  :regular_price,
-                  :sale_price,
-                  :inventory_amount,
-                  :inventory_unit_type,
-                  :is_visable)
+        params
+          .require(:product)
+            .permit(:name,
+                    :description,
+                    :image,
+                    :product_type,
+                    :regular_price,
+                    :sale_price,
+                    :inventory_amount,
+                    :inventory_unit_type,
+                    :is_visable)
       end
     end
   end
