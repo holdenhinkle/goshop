@@ -42,7 +42,7 @@ module Api
       private
 
       def set_product
-        @product = Product.find(params[:id])
+        @product = Product.friendly.find(params[:id])
       end
 
       def product_params

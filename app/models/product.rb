@@ -6,4 +6,7 @@ class Product < ApplicationRecord
   }, _prefix: :type
 
   validates_presence_of :name, :description, :product_type, :regular_price
+
+  extend FriendlyId
+  friendly_id :name, use: :slugged
 end
