@@ -1,3 +1,5 @@
+require 'pry'
+
 module Api
   module V1
     class ProductsController < ApplicationController
@@ -15,6 +17,7 @@ module Api
 
       def create
         product = Product.new(product_params)
+        binding.pry
 
         if product.save
           render json: ProductSerializer.new(product).serializable_hash.to_json
@@ -56,7 +59,9 @@ module Api
                     :sale_price,
                     :inventory_amount,
                     :inventory_unit_type,
-                    :is_visable)
+                    :is_visable,
+                    category_ids: []
+            )
       end
     end
   end
