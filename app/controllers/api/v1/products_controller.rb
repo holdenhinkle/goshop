@@ -17,7 +17,6 @@ module Api
 
       def create
         product = Product.new(product_params)
-        binding.pry
 
         if product.save
           render json: ProductSerializer.new(product).serializable_hash.to_json
