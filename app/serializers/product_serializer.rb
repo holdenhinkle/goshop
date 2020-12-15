@@ -5,8 +5,8 @@ class ProductSerializer
              :description,
              :image,
              :product_type,
-             :regular_price,
-             :sale_price,
+             :regular_price_cents,
+             :sale_price_cents,
              :inventory_amount
              :slug
 end
