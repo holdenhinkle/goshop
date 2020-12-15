@@ -5,6 +5,9 @@ class Product < ApplicationRecord
     configured_composite: 'configured_composite'
   }, _prefix: :type
 
+  monetize :regular_price_cents
+  monetize :sale_price_cents, allow_nil: true
+
   validates_presence_of :name, :description, :product_type, :regular_price
 
   extend FriendlyId
