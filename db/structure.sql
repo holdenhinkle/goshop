@@ -118,6 +118,16 @@ ALTER SEQUENCE public.components_id_seq OWNED BY public.components.id;
 
 
 --
+-- Name: components_products; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.components_products (
+    product_id bigint NOT NULL,
+    component_id bigint NOT NULL
+);
+
+
+--
 -- Name: friendly_id_slugs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -307,6 +317,20 @@ CREATE UNIQUE INDEX index_components_on_slug ON public.components USING btree (s
 
 
 --
+-- Name: index_components_products_on_component_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_components_products_on_component_id ON public.components_products USING btree (component_id);
+
+
+--
+-- Name: index_components_products_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_components_products_on_product_id ON public.components_products USING btree (product_id);
+
+
+--
 -- Name: index_friendly_id_slugs_on_slug_and_sluggable_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -363,6 +387,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201215015500'),
 ('20201215015737'),
 ('20201215020034'),
-('20201216024849');
+('20201216024849'),
+('20201216035151');
 
 
