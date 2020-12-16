@@ -18,4 +18,7 @@ class Product < ApplicationRecord
 
   has_many :categories_products
   has_many :categories, through: :categories_products
+
+  has_many :components_products
+  has_many :components, through: :components_products
 end
