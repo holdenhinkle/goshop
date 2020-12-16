@@ -81,6 +81,43 @@ CREATE TABLE public.categories_products (
 
 
 --
+-- Name: components; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.components (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    description character varying NOT NULL,
+    slug character varying,
+    image character varying,
+    min_quantity integer DEFAULT 1 NOT NULL,
+    max_quantity integer,
+    is_enabled boolean DEFAULT true NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.components_id_seq OWNED BY public.components.id;
+
+
+--
 -- Name: friendly_id_slugs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -173,6 +210,13 @@ ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.c
 
 
 --
+-- Name: components id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components ALTER COLUMN id SET DEFAULT nextval('public.components_id_seq'::regclass);
+
+
+--
 -- Name: friendly_id_slugs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -200,6 +244,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: components components_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components
+    ADD CONSTRAINT components_pkey PRIMARY KEY (id);
 
 
 --
@@ -245,6 +297,13 @@ CREATE INDEX index_categories_products_on_category_id ON public.categories_produ
 --
 
 CREATE INDEX index_categories_products_on_product_id ON public.categories_products USING btree (product_id);
+
+
+--
+-- Name: index_components_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_components_on_slug ON public.components USING btree (slug);
 
 
 --
@@ -303,6 +362,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201215012859'),
 ('20201215015500'),
 ('20201215015737'),
-('20201215020034');
+('20201215020034'),
+('20201216024849');
 
 
