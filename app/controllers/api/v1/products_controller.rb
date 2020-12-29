@@ -86,7 +86,8 @@ module Api
                     :inventory_amount,
                     :inventory_unit_type,
                     :is_visable,
-                    category_ids: []
+                    category_ids: [],
+                    categories_attributes: [:id, :name, :description]
             )
       end
     end

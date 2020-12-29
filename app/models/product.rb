@@ -16,9 +16,8 @@ class Product < ApplicationRecord
 
   has_many :product_categories
   has_many :categories, through: :product_categories
+  accepts_nested_attributes_for :categories
 
   has_many :product_components
   has_many :components, through: :product_components
-
-  # accepts_nested_attributes_for :product_components
 end
