@@ -71,16 +71,6 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
--- Name: categories_products; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.categories_products (
-    product_id bigint NOT NULL,
-    category_id bigint NOT NULL
-);
-
-
---
 -- Name: components; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -158,6 +148,16 @@ CREATE SEQUENCE public.friendly_id_slugs_id_seq
 --
 
 ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs.id;
+
+
+--
+-- Name: product_categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.product_categories (
+    product_id bigint NOT NULL,
+    category_id bigint NOT NULL
+);
 
 
 --
@@ -296,20 +296,6 @@ CREATE UNIQUE INDEX index_categories_on_slug ON public.categories USING btree (s
 
 
 --
--- Name: index_categories_products_on_category_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_categories_products_on_category_id ON public.categories_products USING btree (category_id);
-
-
---
--- Name: index_categories_products_on_product_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_categories_products_on_product_id ON public.categories_products USING btree (product_id);
-
-
---
 -- Name: index_components_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -352,6 +338,20 @@ CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON publi
 
 
 --
+-- Name: index_product_categories_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_categories_on_category_id ON public.product_categories USING btree (category_id);
+
+
+--
+-- Name: index_product_categories_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_categories_on_product_id ON public.product_categories USING btree (product_id);
+
+
+--
 -- Name: index_products_on_product_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -388,6 +388,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201215015737'),
 ('20201215020034'),
 ('20201216024849'),
-('20201216035151');
+('20201216035151'),
+('20201229021931');
 
 

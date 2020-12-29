@@ -1,5 +1,3 @@
-require 'pry'
-
 class Product < ApplicationRecord
   enum product_type: { 
     simple: 'simple',
@@ -16,9 +14,11 @@ class Product < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
 
-  has_many :categories_products
-  has_many :categories, through: :categories_products
+  has_many :product_categories
+  has_many :categories, through: :product_categories
 
-  has_many :components_products
-  has_many :components, through: :components_products
+  # has_many :components_products
+  # has_many :components, through: :components_products
+
+  # accepts_nested_attributes_for :components_products
 end
