@@ -108,16 +108,6 @@ ALTER SEQUENCE public.components_id_seq OWNED BY public.components.id;
 
 
 --
--- Name: components_products; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.components_products (
-    product_id bigint NOT NULL,
-    component_id bigint NOT NULL
-);
-
-
---
 -- Name: friendly_id_slugs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -157,6 +147,16 @@ ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs
 CREATE TABLE public.product_categories (
     product_id bigint NOT NULL,
     category_id bigint NOT NULL
+);
+
+
+--
+-- Name: product_components; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.product_components (
+    product_id bigint NOT NULL,
+    component_id bigint NOT NULL
 );
 
 
@@ -303,20 +303,6 @@ CREATE UNIQUE INDEX index_components_on_slug ON public.components USING btree (s
 
 
 --
--- Name: index_components_products_on_component_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_components_products_on_component_id ON public.components_products USING btree (component_id);
-
-
---
--- Name: index_components_products_on_product_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_components_products_on_product_id ON public.components_products USING btree (product_id);
-
-
---
 -- Name: index_friendly_id_slugs_on_slug_and_sluggable_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -349,6 +335,20 @@ CREATE INDEX index_product_categories_on_category_id ON public.product_categorie
 --
 
 CREATE INDEX index_product_categories_on_product_id ON public.product_categories USING btree (product_id);
+
+
+--
+-- Name: index_product_components_on_component_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_components_on_component_id ON public.product_components USING btree (component_id);
+
+
+--
+-- Name: index_product_components_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_components_on_product_id ON public.product_components USING btree (product_id);
 
 
 --
@@ -389,6 +389,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201215020034'),
 ('20201216024849'),
 ('20201216035151'),
-('20201229021931');
+('20201229021931'),
+('20201229040211');
 
 

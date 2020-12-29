@@ -4,6 +4,6 @@ class Component < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
 
-  has_many :components_products
-  has_many :products, through: :components_products
+  has_many :product_components
+  has_many :products, through: :product_components
 end
