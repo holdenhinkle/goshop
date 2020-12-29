@@ -1,4 +1,4 @@
-class ComponentsProduct < ApplicationRecord
+class ProductComponent < ApplicationRecord
   belongs_to :component
   belongs_to :product
 end
