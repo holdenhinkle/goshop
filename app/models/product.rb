@@ -27,9 +27,9 @@ class Product < ApplicationRecord
       name = category_attributes[:name]
 
       if category = Category.find_by(name: name)
-        self.categories << category unless self.categories.map { |c| c[:name] }.include?(name)
+        categories << category unless categories.map { |c| c[:name] }.include?(name)
       else
-        self.categories << Category.create(category_attributes)
+        categories << Category.create(category_attributes)
       end
     end
   end
@@ -39,9 +39,9 @@ class Product < ApplicationRecord
       name = component_attributes[:name]
 
       if component = Component.find_by(name: name)
-        self.components << component unless self.components.map { |c| c[:name] }.include?(name)
+        components << component unless components.map { |c| c[:name] }.include?(name)
       else
-        self.components << Component.create(component_attributes)
+        components << Component.create(component_attributes)
       end
     end
   end
