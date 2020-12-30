@@ -1,3 +1,5 @@
+require 'pry'
+
 class Product < ApplicationRecord
   enum product_type: { 
     simple: 'simple',
@@ -16,8 +18,17 @@ class Product < ApplicationRecord
 
   has_many :product_categories
   has_many :categories, through: :product_categories
-  accepts_nested_attributes_for :categories
 
   has_many :product_components
   has_many :components, through: :product_components
+
+  def categories_attributes=(categories)
+    categories.each do |category_attributes|
+      if category = Category.find_by(name: category_attributes[:name])
+        self.categories << category unless self.categories.map { |c| c[:name] }.include? category_attributes[:name]
+      else
+        self.categories << Category.create(category_attributes)
+      end
+    end
+  end
 end
