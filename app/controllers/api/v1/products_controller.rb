@@ -21,7 +21,7 @@ module Api
         product = Product.new(product_params)
 
         if product.save
-          render json: ProductSerializer.new(product).serializable_hash.to_json
+          render json: ProductSerializer.new(product, include: [:categories, :components]).serializable_hash.to_json
         else
           render json: { error: product.errors.messages }, status: 422
         end
@@ -63,11 +63,11 @@ module Api
       end
 
       def regular_price
-        params[:regular_price_cents]
+        params[:product][:regular_price_cents]
       end
 
       def sale_price
-        params[:sale_price_cents]
+        params[:product][:sale_price_cents]
       end
 
       def set_product
@@ -86,7 +86,10 @@ module Api
                     :inventory_amount,
                     :inventory_unit_type,
                     :is_visable,
-                    category_ids: []
+                    category_ids: [],
+                    component_ids: [],
+                    categories_attributes: [:id, :name, :description],
+                    components_attributes: [:id, :name, :description, :image, :slug, :min_quantity, :max_quantity, :is_enabled]
             )
       end
     end

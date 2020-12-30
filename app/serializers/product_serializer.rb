@@ -7,6 +7,9 @@ class ProductSerializer
              :product_type,
              :regular_price_cents,
              :sale_price_cents,
-             :inventory_amount
+             :inventory_amount,
              :slug
+
+  has_many :categories
+  has_many :components
 end

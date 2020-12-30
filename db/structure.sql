@@ -71,13 +71,40 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
--- Name: categories_products; Type: TABLE; Schema: public; Owner: -
+-- Name: components; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.categories_products (
-    product_id bigint NOT NULL,
-    category_id bigint NOT NULL
+CREATE TABLE public.components (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    description character varying NOT NULL,
+    slug character varying,
+    image character varying,
+    min_quantity integer DEFAULT 1 NOT NULL,
+    max_quantity integer,
+    is_enabled boolean DEFAULT true NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
+
+
+--
+-- Name: components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.components_id_seq OWNED BY public.components.id;
 
 
 --
@@ -111,6 +138,26 @@ CREATE SEQUENCE public.friendly_id_slugs_id_seq
 --
 
 ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs.id;
+
+
+--
+-- Name: product_categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.product_categories (
+    product_id bigint NOT NULL,
+    category_id bigint NOT NULL
+);
+
+
+--
+-- Name: product_components; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.product_components (
+    product_id bigint NOT NULL,
+    component_id bigint NOT NULL
+);
 
 
 --
@@ -173,6 +220,13 @@ ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.c
 
 
 --
+-- Name: components id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components ALTER COLUMN id SET DEFAULT nextval('public.components_id_seq'::regclass);
+
+
+--
 -- Name: friendly_id_slugs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -200,6 +254,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: components components_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components
+    ADD CONSTRAINT components_pkey PRIMARY KEY (id);
 
 
 --
@@ -234,17 +296,10 @@ CREATE UNIQUE INDEX index_categories_on_slug ON public.categories USING btree (s
 
 
 --
--- Name: index_categories_products_on_category_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_components_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_products_on_category_id ON public.categories_products USING btree (category_id);
-
-
---
--- Name: index_categories_products_on_product_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_categories_products_on_product_id ON public.categories_products USING btree (product_id);
+CREATE UNIQUE INDEX index_components_on_slug ON public.components USING btree (slug);
 
 
 --
@@ -266,6 +321,34 @@ CREATE UNIQUE INDEX index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope
 --
 
 CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON public.friendly_id_slugs USING btree (sluggable_type, sluggable_id);
+
+
+--
+-- Name: index_product_categories_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_categories_on_category_id ON public.product_categories USING btree (category_id);
+
+
+--
+-- Name: index_product_categories_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_categories_on_product_id ON public.product_categories USING btree (product_id);
+
+
+--
+-- Name: index_product_components_on_component_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_components_on_component_id ON public.product_components USING btree (component_id);
+
+
+--
+-- Name: index_product_components_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_components_on_product_id ON public.product_components USING btree (product_id);
 
 
 --
@@ -303,6 +386,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201215012859'),
 ('20201215015500'),
 ('20201215015737'),
-('20201215020034');
+('20201215020034'),
+('20201216024849'),
+('20201216035151'),
+('20201229021931'),
+('20201229040211');
 
 
