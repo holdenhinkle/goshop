@@ -10,6 +10,8 @@ class Product < ApplicationRecord
 
   validates_presence_of :name, :description, :product_type, :regular_price_cents
   validates :regular_price_cents, numericality: { greater_than: 0 }
+  validate :simple_product_cannot_have_any_components,
+    :composite_product_must_have_at_least_two_components
 
   extend FriendlyId
   friendly_id :name, use: :slugged
@@ -33,7 +35,6 @@ class Product < ApplicationRecord
   end
 
   def components_attributes=(components)
-    binding.pry
     components.each do |component_attributes|
       name = component_attributes[:name]
 
@@ -42,6 +43,18 @@ class Product < ApplicationRecord
       else
         self.components << Component.create(component_attributes)
       end
+    end
+  end
+
+  def simple_product_cannot_have_any_components
+    if product_type == 'simple' && components.present?
+      errors.add(:simple_product, "can't have components")
+    end
+  end
+
+  def composite_product_must_have_at_least_two_components
+    if product_type == 'composite' && components.empty?
+      errors.add(:composite_product, "must have at least two components")
     end
   end
 end
