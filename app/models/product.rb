@@ -24,8 +24,10 @@ class Product < ApplicationRecord
 
   def categories_attributes=(categories)
     categories.each do |category_attributes|
-      if category = Category.find_by(name: category_attributes[:name])
-        self.categories << category unless self.categories.map { |c| c[:name] }.include? category_attributes[:name]
+      name = category_attributes[:name]
+
+      if category = Category.find_by(name: name)
+        self.categories << category unless self.categories.map { |c| c[:name] }.include?(name)
       else
         self.categories << Category.create(category_attributes)
       end
