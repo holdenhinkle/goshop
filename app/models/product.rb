@@ -1,5 +1,3 @@
-require 'pry'
-
 class Product < ApplicationRecord
   enum product_type: { 
     simple: 'simple',
