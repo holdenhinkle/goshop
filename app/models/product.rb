@@ -46,6 +46,8 @@ class Product < ApplicationRecord
     end
   end
 
+  private
+
   def simple_product_cannot_have_any_components
     if product_type == 'simple' && components.present?
       errors.add(:simple_product, "can't have components")
