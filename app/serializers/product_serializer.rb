@@ -11,4 +11,5 @@ class ProductSerializer
              :slug
 
   has_many :categories
+  has_many :components
 end

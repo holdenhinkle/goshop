@@ -31,4 +31,17 @@ class Product < ApplicationRecord
       end
     end
   end
+
+  def components_attributes=(components)
+    binding.pry
+    components.each do |component_attributes|
+      name = component_attributes[:name]
+
+      if component = Component.find_by(name: name)
+        self.components << component unless self.components.map { |c| c[:name] }.include?(name)
+      else
+        self.components << Component.create(component_attributes)
+      end
+    end
+  end
 end
