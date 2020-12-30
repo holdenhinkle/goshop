@@ -21,7 +21,7 @@ module Api
         product = Product.new(product_params)
 
         if product.save
-          render json: ProductSerializer.new(product).serializable_hash.to_json
+          render json: ProductSerializer.new(product, include: [:categories]).serializable_hash.to_json
         else
           render json: { error: product.errors.messages }, status: 422
         end
