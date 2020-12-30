@@ -63,11 +63,11 @@ module Api
       end
 
       def regular_price
-        params[:regular_price_cents]
+        params[:product][:regular_price_cents]
       end
 
       def sale_price
-        params[:sale_price_cents]
+        params[:product][:sale_price_cents]
       end
 
       def set_product
