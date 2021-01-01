@@ -19,8 +19,13 @@ class Product < ApplicationRecord
   has_many :product_categories
   has_many :categories, through: :product_categories
 
+  # a composite product has many components
   has_many :product_components
   has_many :components, through: :product_components
+
+  # a simple product has many components as a component product option
+  has_many :component_product_options
+  has_many :component_options, through: :component_product_options, source: :component
 
   def categories_attributes=(category_attributes)
     category_attributes.each do |attributes|
