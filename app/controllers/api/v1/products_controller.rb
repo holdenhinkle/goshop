@@ -88,8 +88,19 @@ module Api
                     :is_visable,
                     category_ids: [],
                     component_ids: [],
-                    categories_attributes: [:id, :name, :description],
-                    components_attributes: [:id, :name, :description, :image, :slug, :min_quantity, :max_quantity, :is_enabled]
+                    categories_attributes: [:id,
+                                            :name,
+                                            :description],
+                    components_attributes: [:id,
+                                            :name,
+                                            :description,
+                                            :image,
+                                            :slug,
+                                            :min_quantity,
+                                            :max_quantity,
+                                            :is_enabled,
+                                            product_option_ids: []
+                                           ]
             )
       end
     end

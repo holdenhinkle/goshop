@@ -42,12 +42,17 @@ class Product < ApplicationRecord
   def components_attributes=(component_attributes)
     component_attributes.each do |attributes|
       name = attributes[:name]
+      product_option_ids = attributes[:product_option_ids]
 
       if component = Component.find_by(name: name)
         self.components << component unless self.components.map { |c| c[:name] }.include?(name)
+        add_products_to_component(product_option_ids, component) if product_option_ids
       else
-        self.components << Component.create(attributes)
-      end end
+        new_component = Component.create(attributes)
+        self.components << new_component
+        add_products_to_component(product_option_ids, new_component) if product_option_ids
+      end
+    end
   end
 
   private
@@ -61,6 +66,16 @@ class Product < ApplicationRecord
   def composite_product_must_have_at_least_two_components
     if product_type == 'composite' && self.components.size < 2
       errors.add(:composite_product, "must have at least two components")
+    end
+  end
+
+  def add_products_to_component(product_ids, component)
+    product_ids.each do |id|
+      product = Product.find(id)
+      
+      if product[:product_type] == 'simple' && component.product_options.ids.exclude?(id)
+        component.product_options << product
+      end
     end
   end
 end
