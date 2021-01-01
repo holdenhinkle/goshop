@@ -22,40 +22,39 @@ class Product < ApplicationRecord
   has_many :product_components
   has_many :components, through: :product_components
 
-  def categories_attributes=(categories)
-    categories.each do |category_attributes|
-      name = category_attributes[:name]
+  def categories_attributes=(category_attributes)
+    category_attributes.each do |attributes|
+      name = attributes[:name]
 
       if category = Category.find_by(name: name)
-        categories << category unless categories.map { |c| c[:name] }.include?(name)
+        self.categories << category unless self.categories.map { |c| c[:name] }.include?(name)
       else
-        categories << Category.create(category_attributes)
+        self.categories << Category.create(attributes)
       end
     end
   end
 
-  def components_attributes=(components)
-    components.each do |component_attributes|
-      name = component_attributes[:name]
+  def components_attributes=(component_attributes)
+    component_attributes.each do |attributes|
+      name = attributes[:name]
 
       if component = Component.find_by(name: name)
-        components << component unless components.map { |c| c[:name] }.include?(name)
+        self.components << component unless self.components.map { |c| c[:name] }.include?(name)
       else
-        components << Component.create(component_attributes)
-      end
-    end
+        self.components << Component.create(attributes)
+      end end
   end
 
   private
 
   def simple_product_cannot_have_any_components
-    if product_type == 'simple' && components.present?
+    if product_type == 'simple' && self.components.present?
       errors.add(:simple_product, "can't have components")
     end
   end
 
   def composite_product_must_have_at_least_two_components
-    if product_type == 'composite' && components.empty?
+    if product_type == 'composite' && self.components.size < 2
       errors.add(:composite_product, "must have at least two components")
     end
   end
