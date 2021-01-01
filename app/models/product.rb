@@ -46,11 +46,11 @@ class Product < ApplicationRecord
 
       if component = Component.find_by(name: name)
         self.components << component unless self.components.map { |c| c[:name] }.include?(name)
-        add_products_to_component(product_option_ids, component) if product_option_ids
+        add_products_to_component(product_option_ids, component) if product_option_ids.present?
       else
         new_component = Component.create(attributes)
         self.components << new_component
-        add_products_to_component(product_option_ids, new_component) if product_option_ids
+        add_products_to_component(product_option_ids, new_component) if product_option_ids.present?
       end
     end
   end
