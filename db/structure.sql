@@ -71,10 +71,10 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
--- Name: component_products; Type: TABLE; Schema: public; Owner: -
+-- Name: component_product_options; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.component_products (
+CREATE TABLE public.component_product_options (
     component_id bigint NOT NULL,
     product_id bigint NOT NULL
 );
@@ -306,17 +306,17 @@ CREATE UNIQUE INDEX index_categories_on_slug ON public.categories USING btree (s
 
 
 --
--- Name: index_component_products_on_component_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_component_product_options_on_component_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_component_products_on_component_id ON public.component_products USING btree (component_id);
+CREATE INDEX index_component_product_options_on_component_id ON public.component_product_options USING btree (component_id);
 
 
 --
--- Name: index_component_products_on_product_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_component_product_options_on_product_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_component_products_on_product_id ON public.component_products USING btree (product_id);
+CREATE INDEX index_component_product_options_on_product_id ON public.component_product_options USING btree (product_id);
 
 
 --
@@ -416,6 +416,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201229021931'),
 ('20201229040211'),
 ('20201231160700'),
-('20201231161541');
+('20201231161541'),
+('20210101145652');
 
 
