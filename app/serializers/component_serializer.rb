@@ -10,8 +10,4 @@ class ComponentSerializer
              :is_enabled
 
   has_many :product_options, serializer: ProductSerializer
-
-  attribute :product_options do |object|
-    object.product_options.as_json
-  end
 end
