@@ -8,11 +8,6 @@ class Product < ApplicationRecord
   monetize :regular_price_cents
   monetize :sale_price_cents, allow_nil: true
 
-  validates_presence_of :name, :description, :product_type, :regular_price_cents
-  validates :regular_price_cents, numericality: { greater_than: 0 }
-  validate :simple_product_cannot_have_any_components,
-    :composite_product_must_have_at_least_two_components
-
   extend FriendlyId
   friendly_id :name, use: :slugged
 
@@ -26,6 +21,11 @@ class Product < ApplicationRecord
   # a simple product has many components as a component product option
   has_many :component_product_options
   has_many :component_options, through: :component_product_options, source: :component
+
+  validates_presence_of :name, :description, :product_type, :regular_price_cents, :categories
+  validates :components, absence: true, if: :simple_product?
+  validates :components, presence: true, if: :component_product?
+  validates :regular_price_cents, numericality: { greater_than: 0 }
 
   def categories_attributes=(category_attributes)
     category_attributes.each do |attributes|
@@ -57,16 +57,12 @@ class Product < ApplicationRecord
 
   private
 
-  def simple_product_cannot_have_any_components
-    if product_type == 'simple' && self.components.present?
-      errors.add(:simple_product, "can't have components")
-    end
+  def simple_product?
+    self.product_type == 'simple'
   end
 
-  def composite_product_must_have_at_least_two_components
-    if product_type == 'composite' && self.components.size < 2
-      errors.add(:composite_product, "must have at least two components")
-    end
+  def component_product?
+    self.product_type == 'composite'
   end
 
   def add_products_to_component(product_ids, component)
