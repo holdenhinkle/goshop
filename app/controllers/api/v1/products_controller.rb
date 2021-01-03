@@ -12,7 +12,7 @@ module Api
       end
 
       def show
-        render json: ProductSerializer.new(@product).serializable_hash.to_json
+        render json: ProductSerializer.new(@product, include: [:categories, "components.product_options"]).serializable_hash.to_json
       end
 
       def create
@@ -21,7 +21,7 @@ module Api
         product = Product.new(product_params)
 
         if product.save
-          render json: ProductSerializer.new(product, include: [:categories, :components]).serializable_hash.to_json
+          render json: ProductSerializer.new(product, include: [:categories, "components.product_options"]).serializable_hash.to_json
         else
           render json: { error: product.errors.messages }, status: 422
         end
@@ -88,8 +88,19 @@ module Api
                     :is_visable,
                     category_ids: [],
                     component_ids: [],
-                    categories_attributes: [:id, :name, :description],
-                    components_attributes: [:id, :name, :description, :image, :slug, :min_quantity, :max_quantity, :is_enabled]
+                    categories_attributes: [:id,
+                                            :name,
+                                            :description],
+                    components_attributes: [:id,
+                                            :name,
+                                            :description,
+                                            :image,
+                                            :slug,
+                                            :min_quantity,
+                                            :max_quantity,
+                                            :is_enabled,
+                                            product_option_ids: []
+                                           ]
             )
       end
     end

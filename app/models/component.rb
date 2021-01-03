@@ -7,4 +7,7 @@ class Component < ApplicationRecord
 
   has_many :product_components
   has_many :products, through: :product_components
+
+  has_many :component_product_options
+  has_many :product_options, through: :component_product_options, source: :product
 end
