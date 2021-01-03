@@ -21,6 +21,7 @@ class Product < ApplicationRecord
   has_many :component_options, through: :component_product_options, source: :component
 
   validates_presence_of :name, :description, :product_type, :regular_price_cents, :categories
+  validates :name, uniqueness: true
   validates :components, absence: true, if: :simple_product?
   validates :components, presence: true, if: :component_product?
   validates :regular_price_cents, numericality: { greater_than: 0 }
