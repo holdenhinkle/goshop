@@ -12,7 +12,7 @@ module Api
       end
 
       def show
-        render json: ProductSerializer.new(@product).serializable_hash.to_json
+        render json: ProductSerializer.new(@product, include: [:categories, "components.product_options"]).serializable_hash.to_json
       end
 
       def create
