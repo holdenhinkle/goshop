@@ -299,6 +299,13 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_categories_on_name ON public.categories USING btree (name);
+
+
+--
 -- Name: index_categories_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -441,6 +448,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210101145652'),
 ('20210103210857'),
 ('20210105110536'),
-('20210105111016');
+('20210105111016'),
+('20210105111440');
 
 
