@@ -299,6 +299,13 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_categories_on_name ON public.categories USING btree (name);
+
+
+--
 -- Name: index_categories_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -317,6 +324,13 @@ CREATE INDEX index_component_product_options_on_component_id ON public.component
 --
 
 CREATE INDEX index_component_product_options_on_product_id ON public.component_product_options USING btree (product_id);
+
+
+--
+-- Name: index_components_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_components_on_name ON public.components USING btree (name);
 
 
 --
@@ -383,6 +397,13 @@ CREATE UNIQUE INDEX index_product_components_on_product_id_and_component_id ON p
 
 
 --
+-- Name: index_products_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_products_on_name ON public.products USING btree (name);
+
+
+--
 -- Name: index_products_on_product_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -425,6 +446,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201231160700'),
 ('20201231161541'),
 ('20210101145652'),
-('20210103210857');
+('20210103210857'),
+('20210105110536'),
+('20210105111016'),
+('20210105111440');
 
 
