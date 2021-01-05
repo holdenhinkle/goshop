@@ -41,15 +41,12 @@ class Product < ApplicationRecord
   def components_attributes=(component_attributes)
     component_attributes.each do |attributes|
       name = attributes[:name]
-      product_option_ids = attributes[:product_option_ids]
 
       if component = Component.find_by(name: name)
         self.components << component unless self.components.map { |c| c[:name] }.include?(name)
-        add_products_to_component(product_option_ids, component) if product_option_ids.present?
       else
-        new_component = Component.create(attributes)
-        self.components << new_component
-        add_products_to_component(product_option_ids, new_component) if product_option_ids.present?
+        component = Component.create(attributes)
+        self.components << component
       end
     end
   end
@@ -62,15 +59,5 @@ class Product < ApplicationRecord
 
   def component_product?
     self.product_type == 'composite'
-  end
-
-  def add_products_to_component(product_ids, component)
-    product_ids.each do |id|
-      product = Product.find(id)
-      
-      if product[:product_type] == 'simple' && component.product_options.ids.exclude?(id)
-        component.product_options << product
-      end
-    end
   end
 end
