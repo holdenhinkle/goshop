@@ -45,8 +45,7 @@ class Product < ApplicationRecord
       if component = Component.find_by(name: name)
         self.components << component unless self.components.map { |c| c[:name] }.include?(name)
       else
-        component = Component.create(attributes)
-        self.components << component
+        self.components << Component.create(attributes)
       end
     end
   end
@@ -60,4 +59,6 @@ class Product < ApplicationRecord
   def component_product?
     self.product_type == 'composite'
   end
+
+
 end
