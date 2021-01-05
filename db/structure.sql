@@ -383,6 +383,13 @@ CREATE UNIQUE INDEX index_product_components_on_product_id_and_component_id ON p
 
 
 --
+-- Name: index_products_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_products_on_name ON public.products USING btree (name);
+
+
+--
 -- Name: index_products_on_product_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -425,6 +432,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201231160700'),
 ('20201231161541'),
 ('20210101145652'),
-('20210103210857');
+('20210103210857'),
+('20210105110536');
 
 
