@@ -27,27 +27,15 @@ class Product < ApplicationRecord
   validates :regular_price_cents, numericality: { greater_than: 0 }
 
   def categories_attributes=(category_attributes)
-    category_attributes.each do |attributes|
-      name = attributes[:name]
-
-      if category = Category.find_by(name: name)
-        self.categories << category unless self.categories.map { |c| c[:name] }.include?(name)
-      else
-        self.categories << Category.create(attributes)
-      end
-    end
+    nested_attributes(nested_attributes: category_attributes,
+                      model: Category,
+                      collection: categories)
   end
 
   def components_attributes=(component_attributes)
-    component_attributes.each do |attributes|
-      name = attributes[:name]
-
-      if component = Component.find_by(name: name)
-        self.components << component unless self.components.map { |c| c[:name] }.include?(name)
-      else
-        self.components << Component.create(attributes)
-      end
-    end
+    nested_attributes(nested_attributes: component_attributes,
+                      model: Component,
+                      collection: components)
   end
 
   private
@@ -60,5 +48,15 @@ class Product < ApplicationRecord
     self.product_type == 'composite'
   end
 
+  def nested_attributes(nested_attributes:, model:, collection:)
+    nested_attributes.each do |attributes|
+      name = attributes[:name]
 
+      if record = model.find_by(name: name)
+        collection << record unless collection.map { |c| c[:name] }.include?(name)
+      else
+        collection << model.create(attributes)
+      end
+    end
+  end
 end
