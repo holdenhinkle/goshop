@@ -14,5 +14,10 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
     it "returns http success" do
       expect(response).to have_http_status(:success)
     end
+
+    it "returns two category objects" do
+      categories = JSON.parse(response.body)['data']
+      categories.size.should eq(2)
+    end
   end
 end
