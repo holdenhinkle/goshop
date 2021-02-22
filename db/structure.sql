@@ -184,7 +184,7 @@ CREATE TABLE public.products (
     is_visible boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    product_type public.product_type NOT NULL,
+    type public.product_type NOT NULL,
     slug character varying,
     regular_price_cents integer DEFAULT 0 NOT NULL,
     regular_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
@@ -404,17 +404,17 @@ CREATE UNIQUE INDEX index_products_on_name ON public.products USING btree (name)
 
 
 --
--- Name: index_products_on_product_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_products_on_product_type ON public.products USING btree (product_type);
-
-
---
 -- Name: index_products_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_products_on_slug ON public.products USING btree (slug);
+
+
+--
+-- Name: index_products_on_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_products_on_type ON public.products USING btree (type);
 
 
 --
@@ -449,6 +449,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210103210857'),
 ('20210105110536'),
 ('20210105111016'),
-('20210105111440');
+('20210105111440'),
+('20210222155725');
 
 
