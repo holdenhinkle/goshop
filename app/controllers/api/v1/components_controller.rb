@@ -9,24 +9,24 @@ module Api
       end
 
       def show
-        render_json_component(@component)
+        render_component_as_json(@component)
       end
 
       def create
         component = Component.new(component_params)
 
         if component.save!
-          render_json_component(component)
+          render_component_as_json(component)
         else
-          render_json_errors(component)
+          render_errors_as_json(component)
         end
       end
 
       def update
         if @component.update(component_params)
-          render_json_component(@component)
+          render_component_as_json(@component)
         else
-          render_json_errors(@component)
+          render_errors_as_json(@component)
         end
       end
 
@@ -34,7 +34,7 @@ module Api
         if @component.destroy
           head :no_content
         else
-          render_json_errors(@component)
+          render_errors_as_json(@component)
         end
       end
 
@@ -56,11 +56,11 @@ module Api
           )
       end
 
-      def render_json_component(component)
+      def render_component_as_json(component)
         render json: ComponentSerializer.new(component).serializable_hash.to_json
       end
 
-      def render_json_errors(component)
+      def render_errors_as_json(component)
         render json: { errors: component.errors.messages }, status: 442
       end
     end
