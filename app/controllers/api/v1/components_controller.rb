@@ -9,24 +9,24 @@ module Api
       end
 
       def show
-        render json: ComponentSerializer.new(@component).serializable_hash.to_json
+        render_json_component(@component)
       end
 
       def create
         component = Component.new(component_params)
 
         if component.save!
-          render json: ComponentSerializer.new(component).serializable_hash.to_json
+          render_json_component(component)
         else
-          render json: { errors: component.errors.messages }, status: 422
+          render_json_errors(component)
         end
       end
 
       def update
         if @component.update(component_params)
-          render json: ComponentSerializer.new(@component).serializable_hash.to_json
+          render_json_component(@component)
         else
-          render json: { errors: @component.errors.messages }, status: 422
+          render_json_errors(@component)
         end
       end
 
@@ -34,7 +34,7 @@ module Api
         if @component.destroy
           head :no_content
         else
-          render json: { errors: @component.errors.messages }, status: 442
+          render_json_errors(@component)
         end
       end
 
@@ -51,6 +51,14 @@ module Api
                                           :min_quantity,
                                           :max_quantity,
                                           :is_enabled)
+      end
+
+      def render_json_component(component)
+        render json: ComponentSerializer.new(component).serializable_hash.to_json
+      end
+
+      def render_json_errors(component)
+        render json: { errors: component.errors.messages }, status: 442
       end
     end
   end
