@@ -8,6 +8,9 @@ class Product < ApplicationRecord
   has_many :product_categories
   has_many :categories, through: :product_categories
 
+  has_many :component_product_options
+  has_many :component_options, through: :component_product_options, source: :component
+
   validates_presence_of :name, :description, :type, :regular_price_cents, :categories
   validates :name, uniqueness: true
   validates :regular_price_cents, numericality: { greater_than: 0 }
