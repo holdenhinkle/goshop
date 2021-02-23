@@ -6,8 +6,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
   describe "GET #index" do
     before do
-      Category.create(name: 'category 1', description: 'category 1 description')
-      Category.create(name: 'category 2', description: 'category 2 description')
+      2.times { create(:category) }
       get(url)
     end
 
@@ -17,7 +16,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
     it "returns two category objects" do
       categories = JSON.parse(response.body)['data']
-      categories.size.should eq(2)
+      expect(categories.count).to eq(2)
     end
   end
 end
