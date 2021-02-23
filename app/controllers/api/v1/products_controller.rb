@@ -1,3 +1,5 @@
+require 'pry'
+
 module Api
   module V1
     class ProductsController < ApplicationController
@@ -21,7 +23,7 @@ module Api
         if product.save
           render_product_as_json(product)
         else
-          render json: { error: product.errors.messages }, status: 422
+          render_errors_as_json(product)
         end
       end
 
@@ -29,7 +31,7 @@ module Api
         if @product.update(product_params)
           render_product_as_json(@product)
         else
-          render json: { error: @product.errors.messages }, status: 422
+          render_errors_as_json(@product)
         end
       end
 
@@ -37,7 +39,7 @@ module Api
         if @product.destroy
           head :no_content
         else
-          render json: { errors: @product.errors }, status: 422
+          render_errors_as_json(@product)
         end
       end
 
@@ -109,6 +111,10 @@ module Api
         else
           render json: ProductSerializer.new(product, include: [:categories]).serializable_hash.to_json
         end        
+      end
+
+      def render_errors_as_json(product)
+        render json: { errors: product.errors }, status: 422
       end
     end
   end
