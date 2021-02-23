@@ -13,9 +13,8 @@ class Component < ApplicationRecord
 
   def product_option_ids=(product_option_ids)
     product_option_ids.uniq.each do |id|
-      if product = Simple.find(id)
-        options << product
-      end
+      product = Simple.find(id)
+      options << product if product
     end
   end
 end
