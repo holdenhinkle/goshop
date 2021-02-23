@@ -45,6 +45,7 @@ group :development do
   gem 'faker', '~> 2.16'
   gem 'factory_bot_rails', '~> 6.1'
   gem 'database_cleaner', '~> 2.0', '>= 2.0.1'
+  gem 'simplecov', '~> 0.21.2'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
