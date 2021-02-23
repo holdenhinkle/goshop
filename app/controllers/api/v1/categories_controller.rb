@@ -10,24 +10,24 @@ module Api
       end
 
       def show
-        render json: CategorySerializer.new(@category).serializable_hash.to_json
+        render_category_as_json(@category)
       end
 
       def create
         category = Category.new(category_params)
 
         if category.save
-          render json: CategorySerializer.new(category).serializable_hash.to_json
+          render_category_as_json(category)
         else
-          render json: { errors: category.errors.messages }, status: 422
+          render_errors_as_json(category)
         end
       end
 
       def update
         if @category.update(category_params)
-          render json: CategorySerializer.new(@category).serializable_hash.to_json
+          render_category_as_json(@category)
         else
-          render json: { errors: @category.errors.messages }, status: 422
+          render_errors_as_json(@category)
         end
       end
 
@@ -35,7 +35,7 @@ module Api
         if @category.destroy
           head :no_content
         else
-          render json: { errors: @category.errors.messages }, status: 422
+          render_errors_as_json(@category)
         end
       end
 
@@ -47,6 +47,14 @@ module Api
 
       def category_params
         params.require(:category).permit(:name, :description, :image)
+      end
+
+      def render_category_as_json(category)
+        render json: CategorySerializer.new(category).serializable_hash.to_json
+      end
+
+      def render_errors_as_json(category)
+        render json: { errors: category.errors.messages }, status: 422
       end
     end
   end

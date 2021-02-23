@@ -9,24 +9,24 @@ module Api
       end
 
       def show
-        render json: ComponentSerializer.new(@component).serializable_hash.to_json
+        render_component_as_json(@component)
       end
 
       def create
         component = Component.new(component_params)
 
         if component.save!
-          render json: ComponentSerializer.new(component).serializable_hash.to_json
+          render_component_as_json(component)
         else
-          render json: { errors: component.errors.messages }, status: 422
+          render_errors_as_json(component)
         end
       end
 
       def update
         if @component.update(component_params)
-          render json: ComponentSerializer.new(@component).serializable_hash.to_json
+          render_component_as_json(@component)
         else
-          render json: { errors: @component.errors.messages }, status: 422
+          render_errors_as_json(@component)
         end
       end
 
@@ -34,7 +34,7 @@ module Api
         if @component.destroy
           head :no_content
         else
-          render json: { errors: @component.errors.messages }, status: 442
+          render_errors_as_json(@component)
         end
       end
 
@@ -45,12 +45,23 @@ module Api
       end
 
       def component_params
-        params.require(:component).permit(:name,
-                                          :description,
-                                          :image,
-                                          :min_quantity,
-                                          :max_quantity,
-                                          :is_enabled)
+        params.require(:component)
+          .permit(:name,
+                  :description,
+                  :image,
+                  :min_quantity,
+                  :max_quantity,
+                  :is_enabled,
+                  product_option_ids: []
+          )
+      end
+
+      def render_component_as_json(component)
+        render json: ComponentSerializer.new(component, include: [:options]).serializable_hash.to_json
+      end
+
+      def render_errors_as_json(component)
+        render json: { errors: component.errors.messages }, status: 442
       end
     end
   end

@@ -6,18 +6,21 @@ class Component < ApplicationRecord
   friendly_id :name, use: :slugged
 
   has_many :product_components
-  has_many :products, through: :product_components
+  has_many :composite_products, through: :product_components, source: :composite
 
   has_many :component_product_options
-  has_many :product_options, through: :component_product_options, source: :product
+  has_many :options, through: :component_product_options, source: :product
 
   def product_option_ids=(product_option_ids)
     product_option_ids.uniq.each do |id|
-      product = Product.find(id)
-
-      if product && product.product_type == 'simple'
-        product_options << product
-      end
+      product = Simple.find(id)
+      options << product if product && product_not_an_option?(product)
     end
+  end
+
+  private
+  
+  def product_not_an_option?(product)
+    options.none? { |option| option.name == product.name}
   end
 end

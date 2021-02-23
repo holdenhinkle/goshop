@@ -12,7 +12,7 @@ module Api
       end
 
       def show
-        render json: ProductSerializer.new(@product, include: [:categories, "components.product_options"]).serializable_hash.to_json
+        render_product_as_json(@product)
       end
 
       def create
@@ -21,17 +21,19 @@ module Api
         product = Product.new(product_params)
 
         if product.save
-          render json: ProductSerializer.new(product, include: [:categories, "components.product_options"]).serializable_hash.to_json
+          render_product_as_json(product)
         else
-          render json: { error: product.errors.messages }, status: 422
+          render_errors_as_json(product)
         end
       end
 
       def update
+        update_decimal_prices
+
         if @product.update(product_params)
-          render json: ProductSerializer.new(@product).serializable_hash.to_json
+          render_product_as_json(@product)
         else
-          render json: { error: @product.errors.messages }, status: 422
+          render_errors_as_json(@product)
         end
       end
 
@@ -39,7 +41,7 @@ module Api
         if @product.destroy
           head :no_content
         else
-          render json: { errors: @product.errors }, status: 422
+          render_errors_as_json(@product)
         end
       end
 
@@ -80,7 +82,7 @@ module Api
             .permit(:name,
                     :description,
                     :image,
-                    :product_type,
+                    :type,
                     :regular_price_cents,
                     :sale_price_cents,
                     :inventory_amount,
@@ -102,6 +104,19 @@ module Api
                                             product_option_ids: []
                                            ]
             )
+      end
+
+      def render_product_as_json(product)
+        case product.type
+        when 'Composite'
+          render json: CompositeSerializer.new(product, include: [:categories, "components.options"]).serializable_hash.to_json
+        else
+          render json: ProductSerializer.new(product, include: [:categories]).serializable_hash.to_json
+        end        
+      end
+
+      def render_errors_as_json(product)
+        render json: { errors: product.errors }, status: 422
       end
     end
   end

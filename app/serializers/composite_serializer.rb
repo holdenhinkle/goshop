@@ -1,4 +1,4 @@
-class ProductOptionSerializer
+class CompositeSerializer
   include JSONAPI::Serializer
   set_key_transform :camel_lower
   attributes :name,
@@ -10,5 +10,6 @@ class ProductOptionSerializer
              :inventory_amount,
              :slug
 
+  has_many :categories
   has_many :components
 end
