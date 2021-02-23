@@ -57,7 +57,7 @@ module Api
       end
 
       def render_component_as_json(component)
-        render json: ComponentSerializer.new(component).serializable_hash.to_json
+        render json: ComponentSerializer.new(component, include: [:options]).serializable_hash.to_json
       end
 
       def render_errors_as_json(component)
