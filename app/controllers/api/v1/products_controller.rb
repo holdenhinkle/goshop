@@ -28,6 +28,8 @@ module Api
       end
 
       def update
+        update_decimal_prices
+
         if @product.update(product_params)
           render_product_as_json(@product)
         else
