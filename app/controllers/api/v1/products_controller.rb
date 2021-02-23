@@ -10,7 +10,7 @@ module Api
       end
 
       def show
-        render_json(@product)
+        render_product_as_json(@product)
       end
 
       def create
@@ -19,7 +19,7 @@ module Api
         product = Product.new(product_params)
 
         if product.save
-          render_json(product)
+          render_product_as_json(product)
         else
           render json: { error: product.errors.messages }, status: 422
         end
@@ -27,7 +27,7 @@ module Api
 
       def update
         if @product.update(product_params)
-          render_json(@product)
+          render_product_as_json(@product)
         else
           render json: { error: @product.errors.messages }, status: 422
         end
@@ -102,7 +102,7 @@ module Api
             )
       end
 
-      def render_json(product)
+      def render_product_as_json(product)
         case product.type
         when 'Composite'
           render json: CompositeSerializer.new(product, include: [:categories, "components.options"]).serializable_hash.to_json
