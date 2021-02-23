@@ -42,6 +42,9 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rspec', '~> 3.10'
   gem 'rspec-rails', '~> 4.0', '>= 4.0.1'
+  gem 'faker', '~> 2.16'
+  gem 'factory_bot_rails', '~> 6.1'
+  gem 'database_cleaner', '~> 2.0', '>= 2.0.1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
