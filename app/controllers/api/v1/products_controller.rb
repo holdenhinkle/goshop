@@ -29,7 +29,7 @@ module Api
 
       def update
         if @product.update(product_params)
-          render json: ProductSerializer.new(@product).serializable_hash.to_json
+          render_json(@product)
         else
           render json: { error: @product.errors.messages }, status: 422
         end
@@ -106,10 +106,10 @@ module Api
 
       def render_json(product)
         case product.type
-        when 'Simple'
-          render json: ProductSerializer.new(product, include: [:categories]).serializable_hash.to_json
         when 'Composite'
           render json: CompositeSerializer.new(product, include: [:categories, "components.options"]).serializable_hash.to_json
+        else
+          render json: ProductSerializer.new(product, include: [:categories]).serializable_hash.to_json
         end        
       end
     end
