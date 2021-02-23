@@ -45,12 +45,15 @@ module Api
       end
 
       def component_params
-        params.require(:component).permit(:name,
-                                          :description,
-                                          :image,
-                                          :min_quantity,
-                                          :max_quantity,
-                                          :is_enabled)
+        params.require(:component)
+          .permit(:name,
+                  :description,
+                  :image,
+                  :min_quantity,
+                  :max_quantity,
+                  :is_enabled,
+                  product_option_ids: []
+          )
       end
 
       def render_json_component(component)
