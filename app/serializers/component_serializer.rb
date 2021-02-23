@@ -9,5 +9,5 @@ class ComponentSerializer
              :max_quantity,
              :is_enabled
 
-  has_many :product_options, serializer: ProductSerializer
+  has_many :options, serializer: ProductSerializer
 end
