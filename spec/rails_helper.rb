@@ -39,7 +39,10 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  # configs for the database-cleaner
+  # Config for FactoryBot. Call create(:object) instead of FactoryBot.create(:object)
+  config.include FactoryBot::Syntax::Methods
+
+  # Configs for the database-cleaner
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
