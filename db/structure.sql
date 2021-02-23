@@ -165,7 +165,7 @@ CREATE TABLE public.product_categories (
 --
 
 CREATE TABLE public.product_components (
-    product_id bigint NOT NULL,
+    composite_id bigint NOT NULL,
     component_id bigint NOT NULL
 );
 
@@ -184,13 +184,13 @@ CREATE TABLE public.products (
     is_visible boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    type public.product_type NOT NULL,
     slug character varying,
     regular_price_cents integer DEFAULT 0 NOT NULL,
     regular_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     sales_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     sale_price_cents integer,
-    sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL
+    sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    type character varying NOT NULL
 );
 
 
@@ -383,17 +383,17 @@ CREATE INDEX index_product_components_on_component_id ON public.product_componen
 
 
 --
--- Name: index_product_components_on_product_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_product_components_on_composite_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_product_components_on_product_id ON public.product_components USING btree (product_id);
+CREATE INDEX index_product_components_on_composite_id ON public.product_components USING btree (composite_id);
 
 
 --
--- Name: index_product_components_on_product_id_and_component_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_product_components_on_composite_id_and_component_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_product_components_on_product_id_and_component_id ON public.product_components USING btree (product_id, component_id);
+CREATE UNIQUE INDEX index_product_components_on_composite_id_and_component_id ON public.product_components USING btree (composite_id, component_id);
 
 
 --
@@ -450,6 +450,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210105110536'),
 ('20210105111016'),
 ('20210105111440'),
-('20210222155725');
+('20210222155725'),
+('20210222162348'),
+('20210222165641'),
+('20210222165823'),
+('20210222222650');
 
 
