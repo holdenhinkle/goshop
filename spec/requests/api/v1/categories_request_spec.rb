@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::CategoriesController, type: :request do
-  url = 'http://localhost:3000/api/v1/categories/'
+  let!(:url) { 'http://localhost:3000/api/v1/categories/' }
 
   describe "#index" do
     before do
@@ -31,19 +31,6 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
   describe '#show' do
     let!(:category) { create(:category) }
-
-    context 'invalid request' do
-      it 'returns http status code 404 when category does not exist' do
-        get(url + (category.id + 1).to_s)
-        expect(response).to have_http_status(404)
-      end
-
-      it 'returns correct error message when category does not exist' do
-        get(url + (category.id + 1).to_s)
-        body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested category does't exist")
-      end
-    end
 
     context 'valid request' do
       let!(:id) { category.id.to_s }
@@ -77,9 +64,52 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
         expect(body['data']['attributes'].keys).to match_array(%w[name description image slug])
       end
     end
+
+    context 'invalid request' do
+      it 'returns http status code 404 when category does not exist' do
+        get(url + (category.id + 1).to_s)
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns correct error message when category does not exist' do
+        get(url + (category.id + 1).to_s)
+        body = JSON.parse(response.body)
+        expect(body['error']).to eq("The requested category does't exist")
+      end
+    end
   end
 
   describe '#create' do
+    context 'valid request' do
+      let!(:name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
+
+      before do
+        category = {
+          name: name,
+          description: Faker::Lorem.paragraph
+        }
+
+        post(url, params: { category: category })
+      end
+
+      it 'renders the correct JSON representation of the new category' do
+        body = JSON.parse(response.body)
+        expect(body['data'].keys).to match_array(%w[id type attributes])
+        expect(body['data']['type']).to eq('category')
+        expect(body['data']['attributes'].keys).to match_array(%w[name description image slug])
+      end
+
+      it 'returns http status 200 OK when both name and description are given' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'sluggifies the category name' do
+        body = JSON.parse(response.body)
+        slug = name.split(' ').map(&:downcase).join('-')
+        expect(body['data']['attributes']['slug']).to eq(slug)
+      end
+    end
+
     context 'invalid request' do
       it 'returns the correct error message when an existing name is given' do
         name = Faker::Lorem.words(number: 2).map(&:capitalize).join(' ')
@@ -140,36 +170,6 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
           expect(body['errors']['name'].count).to eq(1)
           expect(body['errors']['name'][0]).to eq("can't be blank")
         end
-      end
-    end
-
-    context 'valid request' do
-      let!(:name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
-
-      before do
-        category = {
-          name: name,
-          description: Faker::Lorem.paragraph
-        }
-
-        post(url, params: { category: category })
-      end
-
-      it 'renders the correct JSON representation of the new category' do
-        body = JSON.parse(response.body)
-        expect(body['data'].keys).to match_array(%w[id type attributes])
-        expect(body['data']['type']).to eq('category')
-        expect(body['data']['attributes'].keys).to match_array(%w[name description image slug])
-      end
-
-      it 'returns http status 200 OK when both name and description are given' do
-        expect(response).to have_http_status(:success)
-      end
-
-      it 'sluggifies the category name' do
-        body = JSON.parse(response.body)
-        slug = name.split(' ').map(&:downcase).join('-')
-        expect(body['data']['attributes']['slug']).to eq(slug)
       end
     end
   end
@@ -309,12 +309,14 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
       it 'deletes the category when the category id is used as identifying param' do
         id = JSON.parse(response.body)['data']['id']
+
         expect do
           delete(url + id)
         end.to change(Category, :count).by(-1)    end
 
       it 'deletes the category when the category slug is used as identifying param' do
         slug = JSON.parse(response.body)['data']['attributes']['slug']
+        
         expect do
           delete(url + slug)
         end.to change(Category, :count).by(-1)
