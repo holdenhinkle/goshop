@@ -1,7 +1,9 @@
+require 'pry'
+
 module Api
   module V1
     class CategoriesController < ApplicationController
-      before_action :set_category, only: [:show, :update, :destroy]
+      before_action :set_category, only: [:update, :show, :destroy]
 
       def index
         category = Category.all
@@ -10,7 +12,11 @@ module Api
       end
 
       def show
-        render_category_as_json(@category)
+        if @category
+          render_category_as_json(@category)
+        else
+          render_404_as_json
+        end
       end
 
       def create
@@ -24,25 +30,31 @@ module Api
       end
 
       def update
-        if @category.update(category_params)
+        if @category&.update(category_params)
           render_category_as_json(@category)
-        else
+        elsif @category
           render_errors_as_json(@category)
+        else
+          render_404_as_json
         end
       end
 
       def destroy
-        if @category.destroy
+        if @category&.destroy
           head :no_content
         else
-          render_errors_as_json(@category)
+          render_404_as_json
         end
       end
 
       private
 
       def set_category
-        @category = Category.friendly.find(params[:id])
+        begin
+          @category = Category.friendly.find(params[:id])
+        rescue ActiveRecord::RecordNotFound => e
+          @category = nil
+        end
       end
 
       def category_params
@@ -55,6 +67,15 @@ module Api
 
       def render_errors_as_json(category)
         render json: { errors: category.errors.messages }, status: 422
+      end
+
+      def render_404_as_json
+        payload = {
+          error: "The requested category does't exist",
+          status: 404
+        }
+
+        render json: payload, status: 404   
       end
     end
   end
