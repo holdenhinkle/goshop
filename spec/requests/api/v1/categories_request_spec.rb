@@ -84,11 +84,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
       let!(:name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
 
       before do
-        category = {
-          name: name,
-          description: Faker::Lorem.paragraph
-        }
-
+        category = attributes_for(:category, name: name)
         post(url, params: { category: category })
       end
 
