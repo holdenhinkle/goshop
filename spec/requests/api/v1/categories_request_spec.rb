@@ -129,27 +129,6 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
       context 'name is missing' do
         before do
           category = {
-            name: Faker::Lorem.words(number: 2).map(&:capitalize).join(' '),
-          }
-
-          post(url, params: { category: category })          
-        end
-
-        it 'returns http status 422' do
-          expect(response).to have_http_status(422)
-        end
-
-        it 'returns the correct error message' do
-          body = JSON.parse(response.body)
-          expect(body['errors'].count).to eq(1)
-          expect(body['errors']['description'].count).to eq(1)
-          expect(body['errors']['description'][0]).to eq("can't be blank")
-        end
-      end
-
-      context 'description is missing' do
-        before do
-          category = {
             description: Faker::Lorem.paragraph
           }
 
@@ -165,6 +144,27 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
           expect(body['errors'].count).to eq(1)
           expect(body['errors']['name'].count).to eq(1)
           expect(body['errors']['name'][0]).to eq("can't be blank")
+        end
+      end
+
+      context 'description is missing' do
+        before do
+          category = {
+            name: Faker::Lorem.words(number: 2).map(&:capitalize).join(' '),
+          }
+
+          post(url, params: { category: category })          
+        end
+
+        it 'returns http status 422' do
+          expect(response).to have_http_status(422)
+        end
+
+        it 'returns the correct error message' do
+          body = JSON.parse(response.body)
+          expect(body['errors'].count).to eq(1)
+          expect(body['errors']['description'].count).to eq(1)
+          expect(body['errors']['description'][0]).to eq("can't be blank")
         end
       end
     end
