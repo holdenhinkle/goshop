@@ -84,11 +84,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
       let!(:name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
 
       before do
-        category = {
-          name: name,
-          description: Faker::Lorem.paragraph
-        }
-
+        category = attributes_for(:category, name: name)
         post(url, params: { category: category })
       end
 
@@ -115,16 +111,11 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
         name = Faker::Lorem.words(number: 2).map(&:capitalize).join(' ')
 
         2.times do
-          category = {
-            name: name,
-            description: Faker::Lorem.paragraph
-          }
-
+          category = attributes_for(:category, name: name)
           post(url, params: { category: category })
         end
 
         body = JSON.parse(response.body)
-
         expect(body['errors'].count).to eq(1)
         expect(body['errors']['name'].count).to eq(1)
         expect(body['errors']['name'][0]).to eq('has already been taken')
@@ -132,31 +123,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
       context 'name is missing' do
         before do
-          category = {
-            name: Faker::Lorem.words(number: 2).map(&:capitalize).join(' '),
-          }
-
-          post(url, params: { category: category })          
-        end
-
-        it 'returns http status 422' do
-          expect(response).to have_http_status(422)
-        end
-
-        it 'returns the correct error message' do
-          body = JSON.parse(response.body)
-          expect(body['errors'].count).to eq(1)
-          expect(body['errors']['description'].count).to eq(1)
-          expect(body['errors']['description'][0]).to eq("can't be blank")
-        end
-      end
-
-      context 'description is missing' do
-        before do
-          category = {
-            description: Faker::Lorem.paragraph
-          }
-
+          category = attributes_for(:category, :no_name)
           post(url, params: { category: category })
         end
 
@@ -171,20 +138,32 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
           expect(body['errors']['name'][0]).to eq("can't be blank")
         end
       end
+
+      context 'description is missing' do
+        before do
+          category = attributes_for(:category, :no_description)
+          post(url, params: { category: category })
+        end
+
+        it 'returns http status 422' do
+          expect(response).to have_http_status(422)
+        end
+
+        it 'returns the correct error message' do
+          body = JSON.parse(response.body)
+          expect(body['errors'].count).to eq(1)
+          expect(body['errors']['description'].count).to eq(1)
+          expect(body['errors']['description'][0]).to eq("can't be blank")
+        end
+      end
     end
   end
 
   describe '#update' do
     context 'valid request' do
       before do
-        category = {
-          name: Faker::Lorem.words(number: 2).map(&:capitalize).join(' '),
-          description: Faker::Lorem.paragraph,
-          image: Faker::Internet.url(host: 'example.com')
-        }
-
+        category = attributes_for(:category, :with_image)
         post(url, params: { category: category })
-
         @id = JSON.parse(response.body)['data']['id']
       end
 
@@ -248,12 +227,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
     context 'invalid request' do
       before do
         2.times do |n|
-          category = {
-            name: "Category #{n}",
-            description: Faker::Lorem.paragraph,
-            image: Faker::Internet.url(host: 'example.com')
-          }
-
+          category = attributes_for(:category, name: "Category #{n}")
           post(url, params: { category: category })
         end
 
@@ -275,12 +249,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
     context 'category does not exist' do
       before do
-        category = {
-          name: Faker::Lorem.words(number: 2).map(&:capitalize).join(' '),
-          description: Faker::Lorem.paragraph,
-          image: Faker::Internet.url(host: 'example.com')
-        }
-
+        category = attributes_for(:category)
         patch(url + '1', params: { category: category })
       end
 
@@ -298,12 +267,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
   describe '#destroy' do
     context 'valid request' do
       before do
-        category = {
-          name: Faker::Lorem.words(number: 2).map(&:capitalize).join(' '),
-          description: Faker::Lorem.paragraph,
-          image: Faker::Internet.url(host: 'example.com')
-        }
-
+        category = attributes_for(:category)
         post(url, params: { category: category })
       end
 
@@ -312,7 +276,8 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
         expect do
           delete(url + id)
-        end.to change(Category, :count).by(-1)    end
+        end.to change(Category, :count).by(-1)
+      end
 
       it 'deletes the category when the category slug is used as identifying param' do
         slug = JSON.parse(response.body)['data']['attributes']['slug']
