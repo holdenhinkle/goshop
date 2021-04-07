@@ -9,7 +9,11 @@ module Api
       end
 
       def show
-        render_component_as_json(@component)
+        if @component
+          render_component_as_json(@component)
+        else
+          render_404_as_json
+        end
       end
 
       def create
@@ -23,25 +27,31 @@ module Api
       end
 
       def update
-        if @component.update(component_params)
+        if @component&.update(component_params)
           render_component_as_json(@component)
-        else
+        elsif @component
           render_errors_as_json(@component)
+        else
+          render_404_as_json
         end
       end
 
       def destroy
-        if @component.destroy
+        if @component&.destroy
           head :no_content
         else
-          render_errors_as_json(@component)
+          render_404_as_json
         end
       end
 
       private
 
       def set_component
-        @component = Component.friendly.find(params[:id])
+        begin
+          @component = Component.friendly.find(params[:id])
+        rescue ActiveRecord::RecordNotFound => e
+          @component = nil
+        end
       end
 
       def component_params
@@ -62,6 +72,15 @@ module Api
 
       def render_errors_as_json(component)
         render json: { errors: component.errors.messages }, status: 422
+      end
+
+      def render_404_as_json
+        payload = {
+          error: "The requested component does't exist",
+          status: 404
+        }
+
+        render json: payload, status: 404   
       end
     end
   end
