@@ -61,7 +61,7 @@ module Api
       end
 
       def render_errors_as_json(component)
-        render json: { errors: component.errors.messages }, status: 442
+        render json: { errors: component.errors.messages }, status: 422
       end
     end
   end
