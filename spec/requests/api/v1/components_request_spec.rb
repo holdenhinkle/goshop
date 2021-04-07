@@ -95,4 +95,38 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       end
     end
   end
+
+  describe '#create' do
+    context 'valid request' do
+      before do
+        post(url, params: { component: attributes_for(:component) })
+      end
+  
+      it 'returns 200' do
+        expect(response).to have_http_status(:success)
+      end
+  
+      it 'renders the correct JSON representation of the new component' do  
+        component = JSON.parse(response.body)['data']
+        products = JSON.parse(response.body)['included']
+  
+        expect(component.keys).to match_array(%w[id type attributes relationships])
+        expect(component['type']).to eq('component')
+        expect(component['attributes'].keys).to match_array(%w[name description image slug minQuantity maxQuantity isEnabled])
+        expect(component['relationships'].keys).to match_array(%w[options])
+        expect(component['relationships']['options'].keys).to match_array(%w[data])
+  
+        products.each do |product|
+          expect(product.keys).to match_array(%w[id type attributes relationships])
+          expect(product['type']).to eq('product')
+          expect(product['attributes'].keys).to math_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount slug])
+          
+          product['relationships']['categories']['data'].each do |data|
+            expect(data.keys).to match_array(%w[id type])
+            expect(data['type']).to eq('category')
+          end
+        end
+      end      
+    end
+  end
 end
