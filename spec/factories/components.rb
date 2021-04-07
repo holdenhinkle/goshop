@@ -5,6 +5,14 @@ FactoryBot.define do
     min_quantity { 1 }
   end
 
+  trait :no_name do 
+    name { nil }
+  end
+
+  trait :no_description do
+    description { nil }
+  end
+
   trait :with_image do
     image { Faker::Internet.url(host: 'example.com') }
   end
