@@ -272,6 +272,11 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
         body = JSON.parse(response.body)
         expect(body['error']).to eq("The requested component does't exist")
       end
+
+      it 'returns status code 404 when component does not exist' do
+        delete(url + (id.to_i + 1).to_s)
+        expect(response).to have_http_status(404)
+      end
     end
   
     context 'using component slug is used as identifying param' do
