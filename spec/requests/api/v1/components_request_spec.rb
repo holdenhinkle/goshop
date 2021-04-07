@@ -166,7 +166,7 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
     end
   end
 
-  describe '#update', focus: true  do
+  describe '#update' do
     context 'name update' do
       let!(:original_name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
       let!(:new_name) { 'Updated Name' }
@@ -239,6 +239,52 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
         current_image = JSON.parse(response.body)['data']['attributes']['image']
         expect(current_image).not_to eq(original_image)
         expect(current_image).to eq(new_image)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    before do
+      post(url, params: { component: attributes_for(:component) })
+    end
+  
+    context 'using component id is used as identifying param' do
+      let!(:id) { JSON.parse(response.body)['data']['id'] }
+  
+      it 'deletes the component' do
+        expect do
+          delete(url + id)
+        end.to change(Component, :count).by(-1)
+      end
+  
+      it 'returns a 204 status code' do
+        delete(url + id)
+        expect(response).to have_http_status(204)
+      end
+  
+      it 'returns an empty body' do
+        delete(url + id)
+        expect(response.body).to eq('')
+      end
+    end
+  
+    context 'using component slug is used as identifying param' do
+      let!(:slug) { JSON.parse(response.body)['data']['attributes']['slug'] }
+  
+      it 'deletes the component' do        
+        expect do
+          delete(url + slug)
+        end.to change(Component, :count).by(-1)
+      end
+  
+      it 'returns a 204 status code' do
+        delete(url + slug)
+        expect(response).to have_http_status(204)
+      end
+  
+      it 'returns an empty body' do
+        delete(url + slug)
+        expect(response.body).to eq('')
       end
     end
   end
