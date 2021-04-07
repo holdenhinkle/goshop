@@ -128,5 +128,41 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
         end
       end      
     end
+
+    context 'invalid request' do
+      context 'name attribute is missing' do
+        before do
+          post(url, params: { component: attributes_for(:component, :no_name) })  
+        end
+  
+        it 'returns http status 422' do
+          expect(response).to have_http_status(422)  
+        end
+  
+        it 'returns the correct errror message' do
+          body = JSON.parse(response.body)
+          expect(body['errors'].count).to eq(1)
+          expect(body['errors']['name'].count).to eq(1)
+          expect(body['errors']['name'][0]).to eq("can't be blank")         
+        end
+      end
+  
+      context 'description attribute is missing' do
+        before do
+          post(url, params: { component: attributes_for(:component, :no_description) })
+        end
+  
+        it 'returns http status 422' do
+          expect(response).to have_http_status(422)
+        end
+  
+        it 'returns the correct errror message' do
+          body = JSON.parse(response.body)
+          expect(body['errors'].count).to eq(1)
+          expect(body['errors']['description'].count).to eq(1)
+          expect(body['errors']['description'][0]).to eq("can't be blank")         
+        end
+      end
+    end
   end
 end
