@@ -165,4 +165,81 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       end
     end
   end
+
+  describe '#update', focus: true  do
+    context 'name update' do
+      let!(:original_name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
+      let!(:new_name) { 'Updated Name' }
+  
+      before do
+        post(url, params: { component: attributes_for(:component, name: original_name) })
+        @id = JSON.parse(response.body)['data']['id'].to_s
+      end
+  
+      it 'returns http status 200 OK' do
+        patch(url + @id, params: { component: { name: new_name } })
+        expect(response).to have_http_status(:success)
+      end
+  
+      it 'updates the name' do
+        patch(url + @id, params: { component: { name: new_name } })
+        current_name = JSON.parse(response.body)['data']['attributes']['name']
+        expect(current_name).not_to eq(original_name)
+        expect(current_name).to eq(new_name)
+      end
+  
+      it 'updates the slug when the name is updated' do
+        original_slug = JSON.parse(response.body)['data']['attributes']['slug']
+        new_slug = new_name.split(' ').map(&:downcase).join('-')
+        patch(url + @id, params: { component: { name: new_name } })
+        current_slug = JSON.parse(response.body)['data']['attributes']['slug']
+        expect(current_slug).not_to eq(original_slug)
+        expect(current_slug).to eq(new_slug)
+      end
+    end
+  
+    context 'description update' do
+      let!(:new_description) { Faker::Lorem.paragraph }
+  
+      before do
+        post(url, params: { component: attributes_for(:component) })
+        @id = JSON.parse(response.body)['data']['id'].to_s
+      end
+  
+      it 'returns http status 200 OK' do
+        patch(url + @id, params: { component: { description: new_description } })
+        expect(response).to have_http_status(:success)
+      end
+  
+      it 'updates the description' do
+        original_description = JSON.parse(response.body)['data']['attributes']['description']
+        patch(url + @id, params: { component: { description: new_description } })
+        current_description = JSON.parse(response.body)['data']['attributes']['description']
+        expect(current_description).not_to eq(original_description)
+        expect(current_description).to eq(new_description)
+      end
+    end
+  
+    context 'image update' do
+      let!(:new_image) { Faker::Internet.url(host: 'example.com') }
+  
+      before do
+        post(url, params: { component: attributes_for(:component, :with_image) })
+        @id = JSON.parse(response.body)['data']['id'].to_s
+      end
+  
+      it 'returns http status 200 OK' do
+        patch(url + @id, params: { component: { image: new_image } })
+        expect(response).to have_http_status(:success)
+      end
+  
+      it 'updates the description' do
+        original_image = JSON.parse(response.body)['data']['attributes']['image']
+        patch(url + @id, params: { component: { image: new_image } })
+        current_image = JSON.parse(response.body)['data']['attributes']['image']
+        expect(current_image).not_to eq(original_image)
+        expect(current_image).to eq(new_image)
+      end
+    end
+  end
 end
