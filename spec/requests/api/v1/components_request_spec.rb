@@ -78,5 +78,21 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
         expect(body['data']['id']).to eq(id)
       end
     end
+
+    context 'using component slug is used as identifying param' do
+      let!(:slug) { component.slug }
+  
+      before { get(url + slug) }
+  
+      it 'returns http status 200 OK' do
+        expect(response).to have_http_status(200)
+      end
+  
+      it 'returns expected component' do
+        body = JSON.parse(response.body)
+        expect(body['data']['type']).to eq('component')
+        expect(body['data']['attributes']['slug']).to eq(slug)
+      end
+    end
   end
 end
