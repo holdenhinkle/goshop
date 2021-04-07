@@ -15,7 +15,7 @@ module Api
       def create
         component = Component.new(component_params)
 
-        if component.save!
+        if component.save
           render_component_as_json(component)
         else
           render_errors_as_json(component)
