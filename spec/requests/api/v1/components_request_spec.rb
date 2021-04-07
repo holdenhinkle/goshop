@@ -248,7 +248,7 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       post(url, params: { component: attributes_for(:component) })
     end
   
-    context 'using component id is used as identifying param' do
+    context 'when component id is used as identifying param' do
       let!(:id) { JSON.parse(response.body)['data']['id'] }
   
       it 'deletes the component' do
@@ -265,6 +265,12 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       it 'returns an empty body' do
         delete(url + id)
         expect(response.body).to eq('')
+      end
+
+      it 'returns an error when component does not exist' do
+        delete(url + (id.to_i + 1).to_s)
+        body = JSON.parse(response.body)
+        expect(body['error']).to eq("The requested component does't exist")
       end
     end
   
