@@ -180,7 +180,7 @@ CREATE TABLE public.products (
     description text NOT NULL,
     image character varying,
     inventory_amount integer,
-    inventory_unit_type character varying,
+    unit_of_measure character varying NOT NULL,
     is_visible boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -454,6 +454,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210222162348'),
 ('20210222165641'),
 ('20210222165823'),
-('20210222222650');
+('20210222222650'),
+('20210410145521'),
+('20210410150312');
 
 
