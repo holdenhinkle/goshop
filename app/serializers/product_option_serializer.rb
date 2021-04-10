@@ -8,6 +8,8 @@ class ProductOptionSerializer
              :regular_price_cents,
              :sale_price_cents,
              :inventory_amount,
+             :unit_of_measure,
+             :is_visible,
              :slug
 
   has_many :components
