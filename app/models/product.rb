@@ -1,4 +1,18 @@
 class Product < ApplicationRecord
+  # enum unit_of_measure: InventoryManagement::UnitOfMeasure::UNITS, _prefix: :unit
+
+  enum unit_of_measure: { 
+    piece: 'piece',
+    gallon: 'gallon',
+    quart: 'quart',
+    pint: 'pint',
+    cup: 'cup',
+    fluid_once: 'fluid_once',
+    tablespoon: 'tablespoon',
+    teaspoon: 'teaspoon',
+    pound: 'pound',
+  }, _prefix: :type
+
   monetize :regular_price_cents
   monetize :sale_price_cents, allow_nil: true
 
@@ -24,6 +38,10 @@ class Product < ApplicationRecord
                       model: Category,
                       collection: categories)
   end
+
+  # def unit_of_measure
+  #   @unit_of_measure ||= InventoryManagement::UnitOfMeasure.new(read_attribute(:unit_of_measure))
+  # end
 
   private
 
