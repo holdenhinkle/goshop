@@ -29,7 +29,7 @@ class Product < ApplicationRecord
   # to-do: rename to components????
   has_many :component_options, through: :component_product_options, source: :component
 
-  validates_presence_of :name, :description, :type, :regular_price_cents, :categories
+  validates_presence_of :name, :description, :type, :regular_price_cents, :unit_of_measure, :categories
   validates :name, uniqueness: true
   validates :regular_price_cents, numericality: { greater_than: 0 }
 
