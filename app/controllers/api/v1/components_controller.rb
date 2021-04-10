@@ -76,7 +76,7 @@ module Api
 
       def render_404_as_json
         payload = {
-          error: "The requested component does't exist",
+          error: "The requested component doesn't exist",
           status: 404
         }
 
