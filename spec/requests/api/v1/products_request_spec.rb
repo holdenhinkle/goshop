@@ -270,6 +270,28 @@ RSpec.describe Api::V1::ProductsController, type: :request do
             expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
           end
         end
+
+        # a bad enum value throws an ArgumentError
+        # fix this later
+        # return an error instead of throwing an error
+        skip 'unit_of_measure value is invalid' do
+          before do
+            product_attributes = attributes_for(:simple_product, :product_invalid_unit_of_measure_value)
+            post(url, params: { product: product_attributes })
+          end
+    
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)
+          end
+    
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            binding.pry
+            expect(body['errors'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
+          end
+        end
       end
     end
 

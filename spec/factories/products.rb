@@ -29,6 +29,13 @@ FactoryBot.define do
     unit_of_measure { nil }
   end
 
+  # a bad enum value throws an ArgumentError
+  # fix this later
+  # return an error instead of throwing an error
+  trait :product_invalid_unit_of_measure_value do
+    unit_of_measure { 'bad_value' }
+  end
+
   trait :product_with_image do
     image { Faker::Internet.url(host: 'example.com') }
   end
