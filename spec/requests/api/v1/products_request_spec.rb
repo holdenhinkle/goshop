@@ -396,6 +396,29 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           expect(current_price).to eq(new_price)
         end
       end
+
+      context 'remove a category' do
+        before do
+          product_attributes = attributes_for(:simple_product)
+          post(url, params: { product: product_attributes })
+          body = JSON.parse(response.body)
+          id = body['data']['id'].to_s
+          @category_1_id = body['included'][0]['id']
+          @category_2_id = body['included'][1]['id']
+          patch(url + id, params: { product: { category_ids: [@category_1_id] } })
+        end
+    
+        it 'returns http status 200 OK' do
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'updates the description' do
+          categories = JSON.parse(response.body)['included']
+          expect(categories.count).to eq(1)
+          expect(categories[0]['id']).to eq(@category_1_id)
+          expect(categories[0]['id']).to_not eq(@category_2_id)
+        end
+      end
     end
   end
 
