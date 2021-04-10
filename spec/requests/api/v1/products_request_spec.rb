@@ -254,6 +254,109 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         end
       end
     end
+
+    describe '#update' do
+      context 'name update' do
+        let!(:original_name) { Faker::Lorem.words(number: 2).map(&:capitalize).join(' ') }
+        let!(:new_name) { 'Updated Name' }
+    
+        before do
+          product_attributes = attributes_for(:simple_product, name: original_name)
+          post(url, params: { product: product_attributes })
+          @id = JSON.parse(response.body)['data']['id'].to_s
+        end
+    
+        it 'returns http status 200 OK' do
+          patch(url + @id, params: { product: { name: new_name } })
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'updates the name' do
+          patch(url + @id, params: { product: { name: new_name } })
+          current_name = JSON.parse(response.body)['data']['attributes']['name']
+          expect(current_name).not_to eq(original_name)
+          expect(current_name).to eq(new_name)
+        end
+    
+        it 'updates the slug when the name is updated' do
+          original_slug = JSON.parse(response.body)['data']['attributes']['slug']
+          new_slug = new_name.split(' ').map(&:downcase).join('-')
+          patch(url + @id, params: { product: { name: new_name } })
+          current_slug = JSON.parse(response.body)['data']['attributes']['slug']
+          expect(current_slug).not_to eq(original_slug)
+          expect(current_slug).to eq(new_slug)
+        end
+      end
+    
+      context 'description update' do
+        let!(:original_description) { Faker::Lorem.paragraph }
+        let!(:new_description) { Faker::Lorem.paragraph }
+    
+        before do
+          product_attributes = attributes_for(:simple_product, description: original_description)
+          post(url, params: { product: product_attributes })
+          @id = JSON.parse(response.body)['data']['id'].to_s
+        end
+    
+        it 'returns http status 200 OK' do
+          patch(url + @id, params: { product: { description: new_description } })
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'updates the description' do
+          patch(url + @id, params: { product: { description: new_description } })
+          current_description = JSON.parse(response.body)['data']['attributes']['description']
+          expect(current_description).not_to eq(original_description)
+          expect(current_description).to eq(new_description)
+        end
+      end
+    
+      context 'image update' do
+        let!(:original_image) { Faker::Internet.url(host: 'example.com') }
+        let!(:new_image) { Faker::Internet.url(host: 'example.com') }
+    
+        before do
+          product_attributes = attributes_for(:simple_product, :with_image, image: original_image)
+          post(url, params: { product: product_attributes })
+          @id = JSON.parse(response.body)['data']['id'].to_s
+        end
+    
+        it 'returns http status 200 OK' do
+          patch(url + @id, params: { product: { image: new_image } })
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'updates the description' do
+          patch(url + @id, params: { product: { image: new_image } })
+          current_image = JSON.parse(response.body)['data']['attributes']['image']
+          expect(current_image).not_to eq(original_image)
+          expect(current_image).to eq(new_image)
+        end
+      end
+    
+      context 'regular price update' do
+        let!(:original_price) { Faker::Number.between(from: 99, to: 20000) }
+        let!(:new_price) { Faker::Number.between(from: 99, to: 20000) }
+    
+        before do
+          product_attributes = attributes_for(:simple_product, regular_price_cents: original_price)
+          post(url, params: { product: product_attributes })
+          @id = JSON.parse(response.body)['data']['id'].to_s
+        end
+    
+        it 'returns http status 200 OK' do
+          patch(url + @id, params: { product: { regular_price_cents: new_price } })
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'updates the description' do
+          patch(url + @id, params: { product: { regular_price_cents: new_price } })
+          current_price = JSON.parse(response.body)['data']['attributes']['regularPriceCents']
+          expect(current_price).not_to eq(original_price)
+          expect(current_price).to eq(new_price)
+        end
+      end
+    end
   end
 
   context 'composite product' do
