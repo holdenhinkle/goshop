@@ -43,10 +43,6 @@ FactoryBot.define do
 end
 
 # to-do
-# change inventory_unit_type to unit_of_measure
-# make unit_of_measure required in db
-# make unit_of_measure required in model
-# create accepted unit_of_measure values
 
 # sales_price_currency {} -- delete this one?
 # sale_price_currency {} -- or delete this one?
