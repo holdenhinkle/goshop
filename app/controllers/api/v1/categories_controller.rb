@@ -71,7 +71,7 @@ module Api
 
       def render_404_as_json
         payload = {
-          error: "The requested category does't exist",
+          error: "The requested category doesn't exist",
           status: 404
         }
 
