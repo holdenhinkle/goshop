@@ -7,6 +7,9 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     # to-do:
     # test pricing => you can enter 999 or 9.99 and regularPriceCents will be 999
 
+    # sales_price_currency {} -- delete this one?
+    # sale_price_currency {} -- or delete this one?
+
     describe '#index' do
       before do
         2.times { create(:simple_product) }
@@ -448,6 +451,9 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   end
 
   context 'composite product' do
+    # relationships:
+    # many to many relationship with component_options
+    
     context 'with component products' do
       
     end
