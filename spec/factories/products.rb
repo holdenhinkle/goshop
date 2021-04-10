@@ -25,6 +25,10 @@ FactoryBot.define do
     regular_price_cents { nil }
   end
 
+  trait :product_no_unit_of_measure do
+    unit_of_measure { nil }
+  end
+
   trait :product_with_image do
     image { Faker::Internet.url(host: 'example.com') }
   end

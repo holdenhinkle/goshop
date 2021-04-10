@@ -232,7 +232,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           end
         end
     
-        context 'regular price attribute is missing' do
+        context 'regular_price_cents attribute is missing' do
           before do
             product_attributes = attributes_for(:simple_product, :product_no_regular_price)
             post(url, params: { product: product_attributes })
@@ -250,6 +250,24 @@ RSpec.describe Api::V1::ProductsController, type: :request do
             expect(body['errors']['regular_price_cents'][1]).to eq("can't be blank")
             expect(body['errors']['regular_price'].count).to eq(1)
             expect(body['errors']['regular_price'][0]).to eq('is not a number')
+          end
+        end
+
+        context 'unit_of_measure attribute is missing' do
+          before do
+            product_attributes = attributes_for(:simple_product, :product_no_unit_of_measure)
+            post(url, params: { product: product_attributes })
+          end
+    
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)
+          end
+    
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            expect(body['errors'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
           end
         end
       end
