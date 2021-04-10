@@ -66,29 +66,32 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
     context 'using component id is used as identifying param' do
       let!(:id) { component.id.to_s }
   
-      before { get(url + id) }
-  
       it 'returns http status 200 OK' do
+        get(url + id)
         expect(response).to have_http_status(200)
       end
   
       it 'returns expected component' do
+        get(url + id)
         body = JSON.parse(response.body)
         expect(body['data']['type']).to eq('component')
         expect(body['data']['id']).to eq(id)
       end
 
-      it 'returns an error when component does not exist' do
-        delete(url + (id.to_i + 1).to_s)
-        body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested component does't exist")
-      end
+      context "when component doesn't exist" do
+        let!(:bad_id) { (id.to_i + 1).to_s }
 
-      it 'returns a 404 status code when component does not exist' do
-        delete(url + (id.to_i + 1).to_s)
-        expect(response).to have_http_status(404)
+        it 'returns an error' do
+          get(url + bad_id)
+          body = JSON.parse(response.body)
+          expect(body['error']).to eq("The requested component doesn't exist")
+        end
+  
+        it 'returns a 404 status code' do
+          get(url + bad_id)
+          expect(response).to have_http_status(404)
+        end
       end
-
     end
 
     context 'using component slug is used as identifying param' do
@@ -211,10 +214,11 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
     end
   
     context 'description update' do
+      let!(:original_description) { Faker::Lorem.paragraph }
       let!(:new_description) { Faker::Lorem.paragraph }
   
       before do
-        post(url, params: { component: attributes_for(:component) })
+        post(url, params: { component: attributes_for(:component, description: original_description) })
         @id = JSON.parse(response.body)['data']['id'].to_s
       end
   
@@ -224,7 +228,6 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       end
   
       it 'updates the description' do
-        original_description = JSON.parse(response.body)['data']['attributes']['description']
         patch(url + @id, params: { component: { description: new_description } })
         current_description = JSON.parse(response.body)['data']['attributes']['description']
         expect(current_description).not_to eq(original_description)
@@ -282,7 +285,7 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       it 'returns an error when component does not exist' do
         delete(url + (id.to_i + 1).to_s)
         body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested component does't exist")
+        expect(body['error']).to eq("The requested component doesn't exist")
       end
 
       it 'returns a 404 status code when component does not exist' do
@@ -313,7 +316,7 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       it 'returns an error when component does not exist' do
         delete(url + slug + slug)
         body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested component does't exist")
+        expect(body['error']).to eq("The requested component doesn't exist")
       end
 
       it 'returns a 404 status code when component does not exist' do
