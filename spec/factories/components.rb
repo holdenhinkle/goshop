@@ -20,8 +20,6 @@ FactoryBot.define do
   trait :with_max_quantity do
     max_quantity { 2 }
   end
-
-  trait :component_product_options do; end
-
-  trait :product_components do; end
 end
+
+# many to many relationship with options (simple products)
