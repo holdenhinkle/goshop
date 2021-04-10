@@ -10,7 +10,11 @@ module Api
       end
 
       def show
-        render_product_as_json(@product)
+        if @product
+          render_product_as_json(@product)
+        else
+          render_404_as_json
+        end
       end
 
       def create
@@ -28,18 +32,20 @@ module Api
       def update
         update_decimal_prices
 
-        if @product.update(product_params)
+        if @product&.update(product_params)
           render_product_as_json(@product)
-        else
+        elsif @product
           render_errors_as_json(@product)
+        else
+          render_404_as_json
         end
       end
 
       def destroy
-        if @product.destroy
+        if @product&.destroy
           head :no_content
         else
-          render_errors_as_json(@product)
+          render_404_as_json
         end
       end
 
@@ -72,6 +78,8 @@ module Api
 
       def set_product
         @product = Product.friendly.find(params[:id])
+      rescue ActiveRecord::RecordNotFound => e
+        @product = nil
       end
 
       def product_params
@@ -84,8 +92,8 @@ module Api
                     :regular_price_cents,
                     :sale_price_cents,
                     :inventory_amount,
-                    :inventory_unit_type,
-                    :is_visable,
+                    :unit_of_measure,
+                    :is_visible,
                     category_ids: [],
                     component_ids: [],
                     categories_attributes: [:id,
@@ -115,6 +123,15 @@ module Api
 
       def render_errors_as_json(product)
         render json: { errors: product.errors }, status: 422
+      end
+
+      def render_404_as_json
+        payload = {
+          error: "The requested product doesn't exist",
+          status: 404
+        }
+
+        render json: payload, status: 404   
       end
     end
   end
