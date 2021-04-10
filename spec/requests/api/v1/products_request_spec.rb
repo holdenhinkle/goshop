@@ -419,6 +419,31 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           expect(categories[0]['id']).to_not eq(@category_2_id)
         end
       end
+
+      context 'add a category' do
+        before do
+          product_attributes = attributes_for(:simple_product)
+          post(url, params: { product: product_attributes })
+          body = JSON.parse(response.body)
+          id = body['data']['id'].to_s
+          @category_id_1 = body['included'][0]['id']
+          @category_id_2 = body['included'][1]['id']
+          @category_id_3 = create(:category)['id'].to_s
+          patch(url + id, params: { product: { category_ids: [@category_id_1, @category_id_2, @category_id_3] } })
+        end
+    
+        it 'returns http status 200 OK' do
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'updates the description' do
+          categories = JSON.parse(response.body)['included']
+          expect(categories.count).to eq(3)
+          expect(categories[0]['id']).to eq(@category_id_1)
+          expect(categories[1]['id']).to eq(@category_id_2)
+          expect(categories[2]['id']).to eq(@category_id_3)
+        end
+      end
     end
   end
 
