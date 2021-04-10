@@ -52,12 +52,3 @@ FactoryBot.define do
     is_visible { false }
   end
 end
-
-# to-do
-
-# sales_price_currency {} -- delete this one?
-# sale_price_currency {} -- or delete this one?
-
-# relationships:
-# many to many relationship with category - done
-# many to many relationship with component_options
