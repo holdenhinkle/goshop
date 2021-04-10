@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :category do
-    name { Faker::Lorem.word }
+    name { Faker::Lorem.unique.word }
     description { Faker::Lorem.paragraph }
 
     trait :no_name do
