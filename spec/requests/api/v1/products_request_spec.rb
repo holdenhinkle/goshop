@@ -280,6 +280,8 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         # a bad enum value throws an ArgumentError
         # fix this later
         # return an error instead of throwing an error
+        # this has been an open issue in the rails community for many years
+        # consider fixing this
         skip 'unit_of_measure value is invalid' do
           before do
             product_attributes = attributes_for(:simple_product, :product_invalid_unit_of_measure_value)
@@ -437,6 +439,32 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           @category_id_1 = body['included'][0]['id']
           @category_id_2 = body['included'][1]['id']
           patch(url + id, params: { product: { category_ids: [@category_id_1, @category_id_1, @category_id_2] } })
+        end
+    
+        it 'returns http status 200 OK' do
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'returns the correct categories' do
+          categories = JSON.parse(response.body)['included']
+          expect(categories.count).to eq(2)
+          expect(categories[0]['id']).to eq(@category_id_1)
+          expect(categories[1]['id']).to eq(@category_id_2)
+        end
+      end
+
+      # the following returns an ActiveRecord::RecordNotFound error
+      # fix this later
+      skip 'add a category by category id that does not exist' do
+        before do
+          product_attributes = attributes_for(:simple_product)
+          post(url, params: { product: product_attributes })
+          body = JSON.parse(response.body)
+          id = body['data']['id'].to_s
+          @category_id_1 = body['included'][0]['id']
+          @category_id_2 = body['included'][1]['id']
+          @category_id_3 = (Category.last.id.to_i + 1).to_s
+          patch(url + id, params: { product: { category_ids: [@category_id_1, @category_id_2, @category_id_3] } })
         end
     
         it 'returns http status 200 OK' do
