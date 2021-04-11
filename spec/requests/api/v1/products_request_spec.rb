@@ -449,7 +449,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         end
       end
 
-      context 'add a category by category id' do
+      context 'add an existing category using category_ids param' do
         before do
           product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
@@ -474,7 +474,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         end
       end
 
-      context 'add a category by category id that was already added' do
+      context 'add an existing category that was already added using category_ids param' do
         before do
           product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
@@ -499,7 +499,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
       # the following returns an ActiveRecord::RecordNotFound error
       # fix this later
-      skip 'add a category by category id that does not exist' do
+      skip 'add an existing category that does not exist using category_ids param' do
         before do
           product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
@@ -523,7 +523,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         end
       end
 
-      context 'remove a category' do
+      context 'remove a category using category_ids param' do
         before do
           product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
