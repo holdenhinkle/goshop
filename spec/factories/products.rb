@@ -3,14 +3,19 @@ FactoryBot.define do
     name { Faker::Lorem.unique.words(number: Random.new.rand(1..3)).join(' ') }
     description { Faker::Lorem.paragraph }
     regular_price_cents { Faker::Number.between(from: 99, to: 20000) }
-    category_ids do
-      [create(:category), create(:category)].each_with_object([]) { |category, array| array << category.id }
-    end
     unit_of_measure { 'piece' }
   end
 
-  factory :simple_product, parent: :product, class: Simple do
+  factory :simple_product_with_category_ids, parent: :product, class: Simple do
     type { 'Simple' }
+    category_ids do
+      [create(:category), create(:category)].each_with_object([]) { |category, array| array << category.id }
+    end
+  end
+
+  factory :simple_product_with_categories_attributes, parent: :product, class: Simple do
+    type { 'Simple' }
+    categories_attributes { [attributes_for(:category)] }
   end
 
   trait :product_no_name do

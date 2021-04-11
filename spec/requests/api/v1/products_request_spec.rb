@@ -15,7 +15,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
     describe '#index' do
       before do
-        2.times { create(:simple_product) }
+        2.times { create(:simple_product_with_category_ids) }
         get(url)
       end
   
@@ -47,7 +47,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
 
     describe '#show' do
-      let!(:product) { create(:simple_product) }
+      let!(:product) { create(:simple_product_with_category_ids) }
     
       it 'renders the correct JSON representation of the product' do
         id = product.id.to_s
@@ -135,7 +135,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     describe '#create' do
       context 'valid request with only required attributes' do
         before do
-          product_attributes = attributes_for(:simple_product)
+          product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
         end
     
@@ -177,25 +177,25 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     
       context 'valid request with optional attributes' do
         fit 'sets image to given value' do
-          product_attributes = attributes_for(:simple_product, :product_with_image)
+          product_attributes = attributes_for(:simple_product_with_category_ids, :product_with_image)
           post(url, params: { product: product_attributes })
           expect(JSON.parse(response.body)['data']['attributes']['image']).not_to be(nil)
         end
     
         it 'sets sale_price_cents to given value' do
-          product_attributes = attributes_for(:simple_product, :product_with_sale_price_cents)
+          product_attributes = attributes_for(:simple_product_with_category_ids, :product_with_sale_price_cents)
           post(url, params: { product: product_attributes })
           expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).not_to be(nil)          
         end
     
         it 'sets inventory_amount to given value' do
-          product_attributes = attributes_for(:simple_product, :product_with_inventory_amount)
+          product_attributes = attributes_for(:simple_product_with_category_ids, :product_with_inventory_amount)
           post(url, params: { product: product_attributes })
           expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).not_to be(nil)          
         end
     
         it 'sets is_visible to given value' do
-          product_attributes = attributes_for(:simple_product, :product_is_not_visible)
+          product_attributes = attributes_for(:simple_product_with_category_ids, :product_is_not_visible)
           post(url, params: { product: product_attributes })
           expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(false)                   
         end
@@ -204,7 +204,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
       context 'invalid request' do
         context 'name attribute is missing' do
           before do
-            product_attributes = attributes_for(:simple_product, :product_no_name)
+            product_attributes = attributes_for(:simple_product_with_category_ids, :product_no_name)
             post(url, params: { product: product_attributes })
           end
     
@@ -222,7 +222,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     
         context 'description attribute is missing' do
           before do
-            product_attributes = attributes_for(:simple_product, :product_no_description)
+            product_attributes = attributes_for(:simple_product_with_category_ids, :product_no_description)
             post(url, params: { product: product_attributes })
           end
     
@@ -240,7 +240,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     
         context 'regular_price_cents attribute is missing' do
           before do
-            product_attributes = attributes_for(:simple_product, :product_no_regular_price)
+            product_attributes = attributes_for(:simple_product_with_category_ids, :product_no_regular_price)
             post(url, params: { product: product_attributes })
           end
     
@@ -261,7 +261,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
         context 'unit_of_measure attribute is missing' do
           before do
-            product_attributes = attributes_for(:simple_product, :product_no_unit_of_measure)
+            product_attributes = attributes_for(:simple_product_with_category_ids, :product_no_unit_of_measure)
             post(url, params: { product: product_attributes })
           end
     
@@ -284,7 +284,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         # consider fixing this
         skip 'unit_of_measure value is invalid' do
           before do
-            product_attributes = attributes_for(:simple_product, :product_invalid_unit_of_measure_value)
+            product_attributes = attributes_for(:simple_product_with_category_ids, :product_invalid_unit_of_measure_value)
             post(url, params: { product: product_attributes })
           end
     
@@ -309,7 +309,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         let!(:new_name) { 'Updated Name' }
     
         before do
-          product_attributes = attributes_for(:simple_product, name: original_name)
+          product_attributes = attributes_for(:simple_product_with_category_ids, name: original_name)
           post(url, params: { product: product_attributes })
           @id = JSON.parse(response.body)['data']['id'].to_s
         end
@@ -341,7 +341,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         let!(:new_description) { Faker::Lorem.paragraph }
     
         before do
-          product_attributes = attributes_for(:simple_product, description: original_description)
+          product_attributes = attributes_for(:simple_product_with_category_ids, description: original_description)
           post(url, params: { product: product_attributes })
           @id = JSON.parse(response.body)['data']['id'].to_s
         end
@@ -364,7 +364,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         let!(:new_image) { Faker::Internet.url(host: 'example.com') }
     
         before do
-          product_attributes = attributes_for(:simple_product, :with_image, image: original_image)
+          product_attributes = attributes_for(:simple_product_with_category_ids, :with_image, image: original_image)
           post(url, params: { product: product_attributes })
           @id = JSON.parse(response.body)['data']['id'].to_s
         end
@@ -387,7 +387,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         let!(:new_price) { Faker::Number.between(from: 99, to: 20000) }
     
         before do
-          product_attributes = attributes_for(:simple_product, regular_price_cents: original_price)
+          product_attributes = attributes_for(:simple_product_with_category_ids, regular_price_cents: original_price)
           post(url, params: { product: product_attributes })
           @id = JSON.parse(response.body)['data']['id'].to_s
         end
@@ -407,7 +407,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
       context 'add a category by category id' do
         before do
-          product_attributes = attributes_for(:simple_product)
+          product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
           body = JSON.parse(response.body)
           id = body['data']['id'].to_s
@@ -432,7 +432,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
       context 'add a category by category id that was already added' do
         before do
-          product_attributes = attributes_for(:simple_product)
+          product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
           body = JSON.parse(response.body)
           id = body['data']['id'].to_s
@@ -457,7 +457,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
       # fix this later
       skip 'add a category by category id that does not exist' do
         before do
-          product_attributes = attributes_for(:simple_product)
+          product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
           body = JSON.parse(response.body)
           id = body['data']['id'].to_s
@@ -481,7 +481,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
       context 'remove a category' do
         before do
-          product_attributes = attributes_for(:simple_product)
+          product_attributes = attributes_for(:simple_product_with_category_ids)
           post(url, params: { product: product_attributes })
           body = JSON.parse(response.body)
           id = body['data']['id'].to_s
