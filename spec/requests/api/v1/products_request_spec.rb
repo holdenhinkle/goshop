@@ -134,46 +134,47 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
     describe '#create' do
       context 'valid request with only required attributes' do
-        before do
-          product_attributes = attributes_for(:simple_product_with_category_ids)
-          post(url, params: { product: product_attributes })
-        end
-    
-        it 'returns 200' do
-          expect(response).to have_http_status(:success)
-        end
-    
-        it 'renders the correct JSON representation of the new component' do
-          product = JSON.parse(response.body)['data']
-    
-          expect(product.keys).to match_array(%w[id type attributes relationships])
-          expect(product['type']).to eq('product')
-          expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
-          expect(product['relationships'].keys).to match_array(%w[categories])
-          expect(product['relationships']['categories'].keys).to match_array(%w[data])
-    
-          product['relationships']['categories']['data'].each do |category|
-            expect(category.keys).to match_array(%w[id type])
-            expect(category['type']).to eq('category')           
+        context 'required category added by category_ids attribute' do
+          before do
+            product_attributes = attributes_for(:simple_product_with_category_ids)
+            post(url, params: { product: product_attributes })
+          end
+      
+          it 'returns 200' do
+            expect(response).to have_http_status(:success)
+          end
+      
+          it 'renders the correct JSON representation of the new component' do
+            product = JSON.parse(response.body)['data']
+      
+            expect(product.keys).to match_array(%w[id type attributes relationships])
+            expect(product['type']).to eq('product')
+            expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
+            expect(product['relationships'].keys).to match_array(%w[categories])
+            expect(product['relationships']['categories'].keys).to match_array(%w[data])
+      
+            product['relationships']['categories']['data'].each do |category|
+              expect(category.keys).to match_array(%w[id type])
+              expect(category['type']).to eq('category')           
+            end
+          end
+      
+          it 'sets image to nil' do
+            expect(JSON.parse(response.body)['data']['attributes']['image']).to be(nil)
+          end
+      
+          it 'sets sale_price_cents to nil' do
+            expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).to be(nil)          
+          end
+      
+          it 'sets inventory to nil' do
+            expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).to be(nil)        
+          end
+      
+          it 'sets is_visible to true' do
+            expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(true)        
           end
         end
-    
-        it 'sets image to nil' do
-          expect(JSON.parse(response.body)['data']['attributes']['image']).to be(nil)
-        end
-    
-        it 'sets sale_price_cents to nil' do
-          expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).to be(nil)          
-        end
-    
-        it 'sets inventory to nil' do
-          expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).to be(nil)        
-        end
-    
-        it 'sets is_visible to true' do
-          expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(true)        
-        end
-      end
     
       context 'valid request with optional attributes' do
         fit 'sets image to given value' do
