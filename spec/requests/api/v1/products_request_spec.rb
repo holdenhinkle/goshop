@@ -474,6 +474,25 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         end
       end
 
+      context 'add a category using categories_attributes param' do
+        before do
+          product_attributes = attributes_for(:simple_product_with_categories_attributes)
+          post(url, params: { product: product_attributes })
+          @id = JSON.parse(response.body)['data']['id'].to_s
+        end
+    
+        it 'returns http status 200 OK' do
+          patch(url + @id, params: { product: { categories_attributes: [attributes_for(:category)] } })
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'returns the correct categories' do
+          expect(JSON.parse(response.body)['included'].count).to eq(1)
+          patch(url + @id, params: { product: { categories_attributes: [attributes_for(:category)] } })
+          expect(JSON.parse(response.body)['included'].count).to eq(2)
+        end
+      end
+
       context 'add a category that was already added using category_ids param' do
         before do
           product_attributes = attributes_for(:simple_product_with_category_ids)
