@@ -10,6 +10,9 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     # sales_price_currency {} -- delete this one?
     # sale_price_currency {} -- or delete this one?
 
+    # create a category when creating a product
+    # create a component when create a composite product
+
     describe '#index' do
       before do
         2.times { create(:simple_product) }
