@@ -442,7 +442,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           expect(response).to have_http_status(:success)
         end
     
-        it 'updates the description' do
+        it 'returns the correct categories' do
           categories = JSON.parse(response.body)['included']
           expect(categories.count).to eq(3)
           expect(categories[0]['id']).to eq(@category_id_1)
