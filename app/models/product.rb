@@ -33,6 +33,9 @@ class Product < ApplicationRecord
   validates :name, uniqueness: true
   validates :regular_price_cents, numericality: { greater_than: 0 }
 
+  # if you try to create a new category with a category name that already exists
+  # a relationship with the existing category of the same name is created.
+  # a new category is not created.
   def categories_attributes=(category_attributes)
     nested_attributes(nested_attributes: category_attributes,
                       model: Category,
