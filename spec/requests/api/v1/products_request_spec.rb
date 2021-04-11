@@ -418,7 +418,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           expect(response).to have_http_status(:success)
         end
     
-        it 'updates the description' do
+        it 'returns the correct category' do
           categories = JSON.parse(response.body)['included']
           expect(categories.count).to eq(1)
           expect(categories[0]['id']).to eq(@category_1_id)
@@ -426,7 +426,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         end
       end
 
-      context 'add a category' do
+      context 'add a category by category id' do
         before do
           product_attributes = attributes_for(:simple_product)
           post(url, params: { product: product_attributes })
@@ -456,7 +456,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   context 'composite product' do
     # relationships:
     # many to many relationship with component_options
-    
+
     context 'with component products' do
       
     end
