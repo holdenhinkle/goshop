@@ -54,7 +54,7 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
       products.each do |product|
         expect(product.keys).to match_array(%w[id type attributes relationships])
         expect(product['type']).to eq('product')
-        expect(product['attributes'].keys).to math_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount slug])
+        expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount slug isVisible unitOfMeasure])
         
         product['relationships']['categories']['data'].each do |data|
           expect(data.keys).to match_array(%w[id type])
@@ -134,7 +134,7 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
         products.each do |product|
           expect(product.keys).to match_array(%w[id type attributes relationships])
           expect(product['type']).to eq('product')
-          expect(product['attributes'].keys).to math_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount slug])
+          expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount slug isVisible unitOfMeasure])
           
           product['relationships']['categories']['data'].each do |data|
             expect(data.keys).to match_array(%w[id type])
