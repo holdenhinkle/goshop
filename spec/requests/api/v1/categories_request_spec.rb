@@ -74,7 +74,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
       it 'returns correct error message when category does not exist' do
         get(url + (category.id + 1).to_s)
         body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested category does't exist")
+        expect(body['error']).to eq("The requested category doesn't exist")
       end
     end
   end
@@ -259,7 +259,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
       it 'returns the correct error message' do
         body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested category does't exist")
+        expect(body['error']).to eq("The requested category doesn't exist")
       end
     end
   end
@@ -309,7 +309,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
       it 'returns the correct error message' do
         body = JSON.parse(response.body)
-        expect(body['error']).to eq("The requested category does't exist")
+        expect(body['error']).to eq("The requested category doesn't exist")
       end
     end
   end
