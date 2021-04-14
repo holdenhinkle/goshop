@@ -23,10 +23,7 @@ class Product < ApplicationRecord
   has_many :categories, through: :product_categories
 
   has_many :component_product_options
-  # component_options is a array of components the product is an option of
-  # this is not an intuitive name
-  # consider renaming
-  # to-do: rename to components????
+  # component_options is an array of simple product options for a component
   has_many :component_options, through: :component_product_options, source: :component
 
   validates_presence_of :name, :description, :type, :regular_price_cents, :unit_of_measure, :categories
