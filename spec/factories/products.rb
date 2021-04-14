@@ -1,6 +1,11 @@
 FactoryBot.define do
   factory :product do
-    name { Faker::Lorem.words(number: Random.new.rand(1..3)).join(' ') }
+    name do
+      Array.new(Random.new.rand(1..3)).map do |word|
+        Faker::Lorem.characters(number: Random.new.rand(3..6)).capitalize
+      end.join(' ')
+    end
+    
     description { Faker::Lorem.paragraph }
     regular_price_cents { Faker::Number.between(from: 99, to: 20000) }
     unit_of_measure { 'piece' }
