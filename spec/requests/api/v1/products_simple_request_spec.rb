@@ -209,7 +209,6 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   
         it 'returns the correct errror message' do
           body = JSON.parse(response.body)
-          binding.pry
           expect(body['errors'].count).to eq(1)
           expect(body['errors']['unit_of_measure'].count).to eq(1)
           expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
