@@ -8,12 +8,6 @@ FactoryBot.define do
 
     description { Faker::Lorem.paragraph }
     min_quantity { 1 }
-
-    product_option_ids do
-      [create(:simple_product_with_category_ids), create(:simple_product_with_category_ids)].each_with_object([]) do |product, array|
-        array << product.id
-      end
-    end
   end
 
   trait :no_name do 
@@ -26,6 +20,14 @@ FactoryBot.define do
 
   trait :with_image do
     image { Faker::Internet.url(host: 'example.com') }
+  end
+
+  trait :with_product_option_ids do
+    product_option_ids do
+      [create(:simple_product_with_category_ids), create(:simple_product_with_category_ids)].each_with_object([]) do |product, array|
+        array << product.id
+      end
+    end
   end
 
   trait :with_max_quantity do
