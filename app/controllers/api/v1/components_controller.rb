@@ -62,7 +62,7 @@ module Api
                   :min_quantity,
                   :max_quantity,
                   :is_enabled,
-                  product_option_ids: []
+                  option_ids: [],
           )
       end
 
