@@ -22,8 +22,8 @@ FactoryBot.define do
     image { Faker::Internet.url(host: 'example.com') }
   end
 
-  trait :with_product_option_ids do
-    product_option_ids do
+  trait :with_option_ids do
+    option_ids do
       [create(:simple_product_with_category_ids), create(:simple_product_with_category_ids)].each_with_object([]) do |product, array|
         array << product.id
       end
@@ -33,6 +33,12 @@ FactoryBot.define do
   trait :with_max_quantity do
     max_quantity { 2 }
   end
-end
 
-# many to many relationship with options (simple products)
+  trait :with_non_default_min_quantity do
+    min_quantity { 2 }
+  end
+
+  trait :is_not_enabled do
+    is_enabled { false }
+  end
+end
