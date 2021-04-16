@@ -56,14 +56,14 @@ RSpec.describe Api::V1::ProductsController, type: :request do
       end
     end
 
-    skip 'composite product with component ids' do
+    context 'composite product with component ids' do
       include_examples '#show' do
         let!(:url) { url }
         let!(:product) { create(:composite_product_with_component_ids) }  
       end
     end
 
-    skip 'composite product with components attributes' do
+    context 'composite product with components attributes' do
       include_examples '#show' do
         let!(:url) { url }
         let!(:product) { create(:composite_product_with_components_attributes) }  
