@@ -26,7 +26,7 @@ RSpec.shared_examples '#index' do
   end
 end
 
-RSpec.shared_examples '#show' do |type|
+RSpec.shared_examples '#show' do |type, relationships|
   it 'renders the correct JSON representation of the product' do
     id = product.id.to_s
     get(url + id)
@@ -37,11 +37,11 @@ RSpec.shared_examples '#show' do |type|
     expect(product.keys).to match_array(%w[id type attributes relationships])
     expect(product['type']).to eq(type)
     expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
-    expect(product['relationships'].keys).to match_array(%w[categories])
+    expect(product['relationships'].keys).to match_array(relationships)
     expect(product['relationships']['categories'].keys).to match_array(%w[data])
 
     categories.each do |category|
-      expect(category.keys).to match_array(%w[id type attributes])
+      expect(category.keys).to match_array(%w[id type attributes]) # sometimes it's ["attributes", "id", "relationships", "type"]
       expect(category['type']).to eq('category')
       expect(category['attributes'].keys).to match_array(%w[name description image slug])
     end
