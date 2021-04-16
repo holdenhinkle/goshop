@@ -3,10 +3,10 @@ RSpec.shared_examples '#index' do
     expect(response).to have_http_status(200)
   end
 
-  # it "returns two product objects" do
-  #   products = JSON.parse(response.body)['data']
-  #   expect(products.count).to eq(2)
-  # end
+  it "returns two product objects" do
+    products = JSON.parse(response.body)['data']
+    expect(products.count).to eq(2)
+  end
 
   it 'renders the correct JSON representation of the existing products' do
     json_response = JSON.parse(response.body)
@@ -26,7 +26,7 @@ RSpec.shared_examples '#index' do
   end
 end
 
-RSpec.shared_examples '#show' do
+RSpec.shared_examples '#show' do |type|
   it 'renders the correct JSON representation of the product' do
     id = product.id.to_s
     get(url + id)
@@ -35,7 +35,7 @@ RSpec.shared_examples '#show' do
     categories = JSON.parse(response.body)['included']
 
     expect(product.keys).to match_array(%w[id type attributes relationships])
-    expect(product['type']).to eq('product')
+    expect(product['type']).to eq(type)
     expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
     expect(product['relationships'].keys).to match_array(%w[categories])
     expect(product['relationships']['categories'].keys).to match_array(%w[data])
@@ -58,7 +58,7 @@ RSpec.shared_examples '#show' do
     it 'returns expected product' do
       get(url + id)
       body = JSON.parse(response.body)
-      expect(body['data']['type']).to eq('product')
+      expect(body['data']['type']).to eq(type)
       expect(body['data']['id']).to eq(id)
     end
 
@@ -89,7 +89,7 @@ RSpec.shared_examples '#show' do
     it 'returns expected product' do
       get(url + slug)
       body = JSON.parse(response.body)
-      expect(body['data']['type']).to eq('product')
+      expect(body['data']['type']).to eq(type)
       expect(body['data']['attributes']['slug']).to eq(slug)
     end
 
