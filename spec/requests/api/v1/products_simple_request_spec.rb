@@ -15,7 +15,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           expect(response).to have_http_status(:success)
         end
     
-        it 'renders the correct JSON representation of the new component' do
+        it 'renders the correct JSON representation of the new product' do
           product = JSON.parse(response.body)['data']
     
           expect(product.keys).to match_array(%w[id type attributes relationships])
@@ -57,7 +57,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           expect(response).to have_http_status(:success)
         end
     
-        it 'renders the correct JSON representation of the new component' do
+        it 'renders the correct JSON representation of the new product' do
           product = JSON.parse(response.body)['data']
     
           expect(product.keys).to match_array(%w[id type attributes relationships])
