@@ -116,8 +116,8 @@ module Api
         case product.type
         when 'Composite'
           render json: CompositeSerializer.new(product, include: [:categories, "components.options"]).serializable_hash.to_json
-        else
-          render json: ProductSerializer.new(product, include: [:categories]).serializable_hash.to_json
+        when 'Simple'
+          render json: SimpleSerializer.new(product, include: [:categories]).serializable_hash.to_json
         end        
       end
 
