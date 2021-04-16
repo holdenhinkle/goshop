@@ -4,12 +4,9 @@ RSpec.describe Api::V1::ComponentsController, type: :request do
   let!(:url) { 'http://localhost:3000/api/v1/components/' }
 
   describe '#index' do
-    # update this
-    # create a component without options
-    # create a component with options
-
     before do
-      2.times { create(:component) }
+      create(:component)
+      create(:component, :with_option_ids)
       get(url)
     end
 
