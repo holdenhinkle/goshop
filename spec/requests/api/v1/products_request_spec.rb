@@ -73,23 +73,6 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
   # # to-do:
   # # test pricing => you can enter 999 or 9.99 and regularPriceCents will be 999
-
   # # sales_price_currency {} -- delete this one?
   # # sale_price_currency {} -- or delete this one?
-
-  # # create a category when creating a product
-  # # create a component when create a composite product
-
-  # context 'composite product' do
-  #   # relationships:
-  #   # many to many relationship with component_options
-
-  #   context 'with component products' do
-      
-  #   end
-
-  #   context 'without component products' do
-      
-  #   end
-  # end
 end
