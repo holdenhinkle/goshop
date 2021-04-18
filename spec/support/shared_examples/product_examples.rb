@@ -26,24 +26,30 @@ RSpec.shared_examples '#index' do
   end
 end
 
-RSpec.shared_examples '#show' do |type, relationships|
+RSpec.shared_examples '#show' do |product_type, relationships|
   it 'renders the correct JSON representation of the product' do
     id = product.id.to_s
     get(url + id)
 
     product = JSON.parse(response.body)['data']
-    categories = JSON.parse(response.body)['included']
+    includes = JSON.parse(response.body)['included']
 
     expect(product.keys).to match_array(%w[id type attributes relationships])
-    expect(product['type']).to eq(type)
+    expect(product['type']).to eq(product_type)
     expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
     expect(product['relationships'].keys).to match_array(relationships)
     expect(product['relationships']['categories'].keys).to match_array(%w[data])
 
-    categories.each do |category|
-      expect(category.keys).to match_array(%w[id type attributes]) # sometimes it's ["attributes", "id", "relationships", "type"]
-      expect(category['type']).to eq('category')
-      expect(category['attributes'].keys).to match_array(%w[name description image slug])
+    includes.each do |include|
+      if include['type'] == 'category'
+        expect(include.keys).to match_array(%w[id type attributes])
+        expect(include['attributes'].keys).to match_array(%w[name description image slug])  
+      elsif include['type'] == 'component'
+        expect(include.keys).to match_array(%w[id type attributes relationships])
+        expect(include['attributes'].keys).to match_array(%w[name description image slug minQuantity maxQuantity isEnabled])
+        # to-do: write tests that the response for a component with options
+        # has the correct data
+      end
     end
   end
 
@@ -58,7 +64,7 @@ RSpec.shared_examples '#show' do |type, relationships|
     it 'returns expected product' do
       get(url + id)
       body = JSON.parse(response.body)
-      expect(body['data']['type']).to eq(type)
+      expect(body['data']['type']).to eq(product_type)
       expect(body['data']['id']).to eq(id)
     end
 
@@ -89,7 +95,7 @@ RSpec.shared_examples '#show' do |type, relationships|
     it 'returns expected product' do
       get(url + slug)
       body = JSON.parse(response.body)
-      expect(body['data']['type']).to eq(type)
+      expect(body['data']['type']).to eq(product_type)
       expect(body['data']['attributes']['slug']).to eq(slug)
     end
 
