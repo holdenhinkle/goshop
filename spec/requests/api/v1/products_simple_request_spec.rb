@@ -19,7 +19,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           product = JSON.parse(response.body)['data']
     
           expect(product.keys).to match_array(%w[id type attributes relationships])
-          expect(product['type']).to eq('product')
+          expect(product['type']).to eq('simple')
           expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
           expect(product['relationships'].keys).to match_array(%w[categories])
           expect(product['relationships']['categories'].keys).to match_array(%w[data])
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
           product = JSON.parse(response.body)['data']
     
           expect(product.keys).to match_array(%w[id type attributes relationships])
-          expect(product['type']).to eq('product')
+          expect(product['type']).to eq('simple')
           expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
           expect(product['relationships'].keys).to match_array(%w[categories])
           expect(product['relationships']['categories'].keys).to match_array(%w[data])
