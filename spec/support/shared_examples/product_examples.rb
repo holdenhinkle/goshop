@@ -117,174 +117,176 @@ RSpec.shared_examples '#show' do |product_type, relationships|
 end
 
 RSpec.shared_examples '#create' do |test_params|
-  product_factory = test_params[:factory]
+  describe "#{test_params[:type]} product" do
+    context "create with #{test_params[:relationships_by]}" do
+      product_factory = test_params[:factory]
 
-  context 'valid request with only required attributes' do
-    context "with #{test_params[:relationships_by]}" do
-      before do
-        product_attributes = attributes_for(product_factory)
-        post(url, params: { product: product_attributes })
-      end
-  
-      it 'returns 200' do
-        expect(response).to have_http_status(:success)
-      end
-  
-      it 'renders the correct JSON representation of the new product' do
-        product = JSON.parse(response.body)['data']
-  
-        expect(product.keys).to match_array(%w[id type attributes relationships])
-        expect(product['type']).to eq(test_params[:type])
-        expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
-        expect(product['relationships'].keys).to match_array(test_params[:relationships])
-        expect(product['relationships']['categories'].keys).to match_array(%w[data])
-  
-        product['relationships']['categories']['data'].each do |category|
-          expect(category.keys).to match_array(%w[id type])
-          expect(category['type']).to eq('category')           
+      context 'valid request with only required attributes' do
+        before do
+          product_attributes = attributes_for(product_factory)
+          post(url, params: { product: product_attributes })
+        end
+    
+        it 'returns 200' do
+          expect(response).to have_http_status(:success)
+        end
+    
+        it 'renders the correct JSON representation of the new product' do
+          product = JSON.parse(response.body)['data']
+    
+          expect(product.keys).to match_array(%w[id type attributes relationships])
+          expect(product['type']).to eq(test_params[:type])
+          expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
+          expect(product['relationships'].keys).to match_array(test_params[:relationships])
+          expect(product['relationships']['categories'].keys).to match_array(%w[data])
+    
+          product['relationships']['categories']['data'].each do |category|
+            expect(category.keys).to match_array(%w[id type])
+            expect(category['type']).to eq('category')           
+          end
+        end
+    
+        it 'sets image to nil' do
+          expect(JSON.parse(response.body)['data']['attributes']['image']).to be(nil)
+        end
+    
+        it 'sets sale_price_cents to nil' do
+          expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).to be(nil)          
+        end
+    
+        it 'sets inventory to nil' do
+          expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).to be(nil)        
+        end
+    
+        it 'sets is_visible to true' do
+          expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(true)        
         end
       end
-  
-      it 'sets image to nil' do
-        expect(JSON.parse(response.body)['data']['attributes']['image']).to be(nil)
-      end
-  
-      it 'sets sale_price_cents to nil' do
-        expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).to be(nil)          
-      end
-  
-      it 'sets inventory to nil' do
-        expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).to be(nil)        
-      end
-  
-      it 'sets is_visible to true' do
-        expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(true)        
-      end
-    end
-  end
 
-  context 'valid request with optional attributes' do
-    fit 'sets image to given value' do
-      product_attributes = attributes_for(product_factory, :product_with_image)
-      post(url, params: { product: product_attributes })
-      expect(JSON.parse(response.body)['data']['attributes']['image']).not_to be(nil)
-    end
+      context 'valid request with optional attributes' do
+        fit 'sets image to given value' do
+          product_attributes = attributes_for(product_factory, :product_with_image)
+          post(url, params: { product: product_attributes })
+          expect(JSON.parse(response.body)['data']['attributes']['image']).not_to be(nil)
+        end
 
-    it 'sets sale_price_cents to given value' do
-      product_attributes = attributes_for(product_factory, :product_with_sale_price_cents)
-      post(url, params: { product: product_attributes })
-      expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).not_to be(nil)          
-    end
+        it 'sets sale_price_cents to given value' do
+          product_attributes = attributes_for(product_factory, :product_with_sale_price_cents)
+          post(url, params: { product: product_attributes })
+          expect(JSON.parse(response.body)['data']['attributes']['salePriceCents']).not_to be(nil)          
+        end
 
-    it 'sets inventory_amount to given value' do
-      product_attributes = attributes_for(product_factory, :product_with_inventory_amount)
-      post(url, params: { product: product_attributes })
-      expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).not_to be(nil)          
-    end
+        it 'sets inventory_amount to given value' do
+          product_attributes = attributes_for(product_factory, :product_with_inventory_amount)
+          post(url, params: { product: product_attributes })
+          expect(JSON.parse(response.body)['data']['attributes']['inventoryAmount']).not_to be(nil)          
+        end
 
-    it 'sets is_visible to given value' do
-      product_attributes = attributes_for(product_factory, :product_is_not_visible)
-      post(url, params: { product: product_attributes })
-      expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(false)                   
-    end
-  end
-
-  context 'invalid request' do
-    context 'name attribute is missing' do
-      before do
-        product_attributes = attributes_for(product_factory, :product_no_name)
-        post(url, params: { product: product_attributes })
+        it 'sets is_visible to given value' do
+          product_attributes = attributes_for(product_factory, :product_is_not_visible)
+          post(url, params: { product: product_attributes })
+          expect(JSON.parse(response.body)['data']['attributes']['isVisible']).to be(false)                   
+        end
       end
 
-      it 'returns http status 422' do
-        expect(response).to have_http_status(422)  
-      end
+      context 'invalid request' do
+        context 'name attribute is missing' do
+          before do
+            product_attributes = attributes_for(product_factory, :product_no_name)
+            post(url, params: { product: product_attributes })
+          end
 
-      it 'returns the correct errror message' do
-        body = JSON.parse(response.body)
-        expect(body['errors'].count).to eq(1)
-        expect(body['errors']['name'].count).to eq(1)
-        expect(body['errors']['name'][0]).to eq("can't be blank")         
-      end
-    end
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)  
+          end
 
-    context 'description attribute is missing' do
-      before do
-        product_attributes = attributes_for(product_factory, :product_no_description)
-        post(url, params: { product: product_attributes })
-      end
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            expect(body['errors'].count).to eq(1)
+            expect(body['errors']['name'].count).to eq(1)
+            expect(body['errors']['name'][0]).to eq("can't be blank")         
+          end
+        end
 
-      it 'returns http status 422' do
-        expect(response).to have_http_status(422)
-      end
+        context 'description attribute is missing' do
+          before do
+            product_attributes = attributes_for(product_factory, :product_no_description)
+            post(url, params: { product: product_attributes })
+          end
 
-      it 'returns the correct errror message' do
-        body = JSON.parse(response.body)
-        expect(body['errors'].count).to eq(1)
-        expect(body['errors']['description'].count).to eq(1)
-        expect(body['errors']['description'][0]).to eq("can't be blank")         
-      end
-    end
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)
+          end
 
-    context 'regular_price_cents attribute is missing' do
-      before do
-        product_attributes = attributes_for(product_factory, :product_no_regular_price)
-        post(url, params: { product: product_attributes })
-      end
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            expect(body['errors'].count).to eq(1)
+            expect(body['errors']['description'].count).to eq(1)
+            expect(body['errors']['description'][0]).to eq("can't be blank")         
+          end
+        end
 
-      it 'returns http status 422' do
-        expect(response).to have_http_status(422)
-      end
+        context 'regular_price_cents attribute is missing' do
+          before do
+            product_attributes = attributes_for(product_factory, :product_no_regular_price)
+            post(url, params: { product: product_attributes })
+          end
 
-      it 'returns the correct errror message' do
-        body = JSON.parse(response.body)
-        expect(body['errors'].count).to eq(2)
-        expect(body['errors']['regular_price_cents'].count).to eq(2)
-        expect(body['errors']['regular_price_cents'][0]).to eq('is not a number')
-        expect(body['errors']['regular_price_cents'][1]).to eq("can't be blank")
-        expect(body['errors']['regular_price'].count).to eq(1)
-        expect(body['errors']['regular_price'][0]).to eq('is not a number')
-      end
-    end
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)
+          end
 
-    context 'unit_of_measure attribute is missing' do
-      before do
-        product_attributes = attributes_for(product_factory, :product_no_unit_of_measure)
-        post(url, params: { product: product_attributes })
-      end
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            expect(body['errors'].count).to eq(2)
+            expect(body['errors']['regular_price_cents'].count).to eq(2)
+            expect(body['errors']['regular_price_cents'][0]).to eq('is not a number')
+            expect(body['errors']['regular_price_cents'][1]).to eq("can't be blank")
+            expect(body['errors']['regular_price'].count).to eq(1)
+            expect(body['errors']['regular_price'][0]).to eq('is not a number')
+          end
+        end
 
-      it 'returns http status 422' do
-        expect(response).to have_http_status(422)
-      end
+        context 'unit_of_measure attribute is missing' do
+          before do
+            product_attributes = attributes_for(product_factory, :product_no_unit_of_measure)
+            post(url, params: { product: product_attributes })
+          end
 
-      it 'returns the correct errror message' do
-        body = JSON.parse(response.body)
-        expect(body['errors'].count).to eq(1)
-        expect(body['errors']['unit_of_measure'].count).to eq(1)
-        expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
-      end
-    end
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)
+          end
 
-    # a bad enum value throws an ArgumentError
-    # fix this later
-    # return an error instead of throwing an error
-    # this has been an open issue in the rails community for many years
-    # consider fixing this
-    skip 'unit_of_measure value is invalid' do
-      before do
-        product_attributes = attributes_for(product_factory, :product_invalid_unit_of_measure_value)
-        post(url, params: { product: product_attributes })
-      end
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            expect(body['errors'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
+          end
+        end
 
-      it 'returns http status 422' do
-        expect(response).to have_http_status(422)
-      end
+        # a bad enum value throws an ArgumentError
+        # fix this later
+        # return an error instead of throwing an error
+        # this has been an open issue in the rails community for many years
+        # consider fixing this
+        skip 'unit_of_measure value is invalid' do
+          before do
+            product_attributes = attributes_for(product_factory, :product_invalid_unit_of_measure_value)
+            post(url, params: { product: product_attributes })
+          end
 
-      it 'returns the correct errror message' do
-        body = JSON.parse(response.body)
-        expect(body['errors'].count).to eq(1)
-        expect(body['errors']['unit_of_measure'].count).to eq(1)
-        expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
+          it 'returns http status 422' do
+            expect(response).to have_http_status(422)
+          end
+
+          it 'returns the correct errror message' do
+            body = JSON.parse(response.body)
+            expect(body['errors'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'].count).to eq(1)
+            expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
+          end
+        end
       end
     end
   end
