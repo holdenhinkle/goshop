@@ -42,6 +42,9 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   end
 
   describe '#show' do
+    # To-do:
+    # Test that a composite product with components with product options 
+    # returns the correct data.
     context 'simple product with category ids' do
       include_examples '#show', 'simple', ['categories'] do
         let!(:url) { url }
@@ -69,12 +72,12 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         let!(:product) { create(:composite_product_with_components_attributes) }  
       end
     end
-
-    # add tests for components with no product options
-    # add tests for components with product options   
   end
 
   describe '#create' do
+    # To-do:
+    # Test that you can create a new composite product with components_attributes
+    # that have product_option_ids.
     include_examples '#create', {
       type: 'simple',
       relationships: ['categories'],
@@ -131,7 +134,8 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   end
 
   describe '#update' do
-    # test updating component
+    # To-do
+    # Test removing product_options from a component.
     include_examples '#update', {
       type: 'simple',
       relationships_by: 'category ids',
@@ -197,8 +201,3 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 end
-
-# to-do:
-# test pricing => you can enter 999 or 9.99 and regularPriceCents will be 999
-# sales_price_currency {} -- delete this one?
-# sale_price_currency {} -- or delete this one?

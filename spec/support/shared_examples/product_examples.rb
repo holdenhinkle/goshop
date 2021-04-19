@@ -27,6 +27,10 @@ RSpec.shared_examples '#index' do
 end
 
 RSpec.shared_examples '#show' do |product_type, relationships|
+  # To-do:
+  # Test that a composite product with components with product options 
+  # returns the correct data.
+
   it 'renders the correct JSON representation of the product' do
     id = product.id.to_s
     get(url + id)
@@ -47,8 +51,6 @@ RSpec.shared_examples '#show' do |product_type, relationships|
       elsif include['type'] == 'component'
         expect(include.keys).to match_array(%w[id type attributes relationships])
         expect(include['attributes'].keys).to match_array(%w[name description image slug minQuantity maxQuantity isEnabled])
-        # to-do: write tests that the response for a component with options
-        # has the correct data
       end
     end
   end
@@ -117,6 +119,11 @@ RSpec.shared_examples '#show' do |product_type, relationships|
 end
 
 RSpec.shared_examples '#create' do |test_params|
+  # To-do:
+  # Test that you can create a new composite product with components_attributes
+  # that have product_option_ids.
+  # Test pricing => you can enter 999 or 9.99 and regularPriceCents will be 999.
+
   describe "#{test_params[:type]} product" do
     context "create with #{test_params[:relationships_by]}" do
       product_factory = test_params[:factory]
@@ -293,6 +300,9 @@ RSpec.shared_examples '#create' do |test_params|
 end
 
 RSpec.shared_examples '#update' do |test_params|
+  # To-do
+  # Test removing product_options from a component.
+
   describe "#{test_params[:type]} product" do
     context "created with #{test_params[:relationships_by]}" do
       product_factory = test_params[:factory]

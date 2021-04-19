@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  # To-do:
+  # Delete sales_price_currency or sale_price_currency. Which is correct?
+
   # enum unit_of_measure: InventoryManagement::UnitOfMeasure::UNITS, _prefix: :unit
 
   enum unit_of_measure: { 
