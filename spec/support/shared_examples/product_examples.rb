@@ -544,71 +544,69 @@ end
 
 RSpec.shared_examples '#destroy' do |test_params|
   describe "#{test_params[:type]} product" do
-    context "created with #{test_params[:relationships_by]}" do
-      before do
-        post(url, params: { product: attributes_for(test_params[:factory]) })
-      end
-    
-      context 'product id is used as identifying param' do
-        let!(:id) { JSON.parse(response.body)['data']['id'] }
-    
-        it 'deletes the product' do
-          expect do
-            delete(url + id)
-          end.to change(Product, :count).by(-1)
-        end
-    
-        it 'returns a 204 status code' do
+    before do
+      post(url, params: { product: attributes_for(test_params[:factory]) })
+    end
+  
+    context 'product id is used as identifying param' do
+      let!(:id) { JSON.parse(response.body)['data']['id'] }
+  
+      it 'deletes the product' do
+        expect do
           delete(url + id)
-          expect(response).to have_http_status(204)
-        end
-    
-        it 'returns an empty body' do
-          delete(url + id)
-          expect(response.body).to eq('')
-        end
-
-        it 'returns an error when product does not exist' do
-          delete(url + (id.to_i + 1).to_s)
-          body = JSON.parse(response.body)
-          expect(body['error']).to eq("The requested product doesn't exist")
-        end
-
-        it 'returns a 404 status code when product does not exist' do
-          delete(url + (id.to_i + 1).to_s)
-          expect(response).to have_http_status(404)
-        end
+        end.to change(Product, :count).by(-1)
       end
-    
-      context 'product slug is used as identifying param' do
-        let!(:slug) { JSON.parse(response.body)['data']['attributes']['slug'] }
-    
-        it 'deletes the product' do        
-          expect do
-            delete(url + slug)
-          end.to change(Product, :count).by(-1)
-        end
-    
-        it 'returns a 204 status code' do
-          delete(url + slug)
-          expect(response).to have_http_status(204)
-        end
-    
-        it 'returns an empty body' do
-          delete(url + slug)
-          expect(response.body).to eq('')
-        end
+  
+      it 'returns a 204 status code' do
+        delete(url + id)
+        expect(response).to have_http_status(204)
+      end
+  
+      it 'returns an empty body' do
+        delete(url + id)
+        expect(response.body).to eq('')
+      end
 
-        it 'returns an error when product does not exist' do
-          delete(url + slug + slug)
-          body = JSON.parse(response.body)
-          expect(body['error']).to eq("The requested product doesn't exist")
-        end
+      it 'returns an error when product does not exist' do
+        delete(url + (id.to_i + 1).to_s)
+        body = JSON.parse(response.body)
+        expect(body['error']).to eq("The requested product doesn't exist")
+      end
 
-        it 'returns a 404 status code when product does not exist' do
-          delete(url + slug + slug)
-          expect(response).to have_http_status(404)
-        end
+      it 'returns a 404 status code when product does not exist' do
+        delete(url + (id.to_i + 1).to_s)
+        expect(response).to have_http_status(404)
+      end
+    end
+  
+    context 'product slug is used as identifying param' do
+      let!(:slug) { JSON.parse(response.body)['data']['attributes']['slug'] }
+  
+      it 'deletes the product' do        
+        expect do
+          delete(url + slug)
+        end.to change(Product, :count).by(-1)
+      end
+  
+      it 'returns a 204 status code' do
+        delete(url + slug)
+        expect(response).to have_http_status(204)
+      end
+  
+      it 'returns an empty body' do
+        delete(url + slug)
+        expect(response.body).to eq('')
+      end
+
+      it 'returns an error when product does not exist' do
+        delete(url + slug + slug)
+        body = JSON.parse(response.body)
+        expect(body['error']).to eq("The requested product doesn't exist")
+      end
+
+      it 'returns a 404 status code when product does not exist' do
+        delete(url + slug + slug)
+        expect(response).to have_http_status(404)
       end
     end
   end  
