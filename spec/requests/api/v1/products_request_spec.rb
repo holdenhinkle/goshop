@@ -43,14 +43,14 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
   describe '#show' do
     context 'simple product with category ids' do
-      include_examples '#show', 'simple', %w[categories] do
+      include_examples '#show', 'simple', ['categories'] do
         let!(:url) { url }
         let!(:product) { create(:simple_product_with_category_ids) }  
       end
     end
 
     context 'simple product with category attributes' do
-      include_examples '#show', 'simple', %w[categories] do
+      include_examples '#show', 'simple', ['categories'] do
         let!(:url) { url }
         let!(:product) { create(:simple_product_with_categories_attributes) }  
       end
@@ -69,22 +69,80 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         let!(:product) { create(:composite_product_with_components_attributes) }  
       end
     end
+
+    # add tests for components with no product options
+    # add tests for components with product options   
   end
 
   describe '#create' do
-    ['category ids', 'category attributes'].each do |category|
-      context "simple product with #{category}" do
-        product_options = {
-          type: 'simple',
-          by_category: category,
-          factory: :simple_product_with_category_ids
-        }
-  
-        include_examples '#create', product_options do
-          let!(:url) { url }
-        end
-      end
+    include_examples '#create', {
+      type: 'simple',
+      relationships: ['categories'],
+      relationships_by: 'category ids',
+      factory: :simple_product_with_category_ids
+    } do
+      let!(:url) { url }
     end
+
+    include_examples '#create', {
+      type: 'simple',
+      relationships: ['categories'],
+      relationships_by: 'category attributes',
+      factory: :simple_product_with_categories_attributes
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#create', {
+      type: 'composite',
+      relationships: %w[categories components],
+      relationships_by: 'category ids and component ids',
+      factory: :composite_product_with_category_ids_and_component_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#create', {
+      type: 'composite',
+      relationships: %w[categories components],
+      relationships_by: 'category ids and component attributes',
+      factory: :composite_product_with_category_ids_and_component_attributes
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#create', {
+      type: 'composite',
+      relationships: %w[categories components],
+      relationships_by: 'category attributes and component ids',
+      factory: :composite_product_with_category_attributes_and_component_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#create', {
+      type: 'composite',
+      relationships: %w[categories components],
+      relationships_by: 'category attributes and components attributes',
+      factory: :composite_product_with_category_attributes_and_component_attributes
+    } do
+      let!(:url) { url }
+    end
+  end
+
+    # ['category ids', 'category attributes'].each do |category|
+    #   context "simple product with #{category}" do
+    #     product_options = {
+    #       type: 'simple',
+    #       by_category: category,
+    #       factory: :simple_product_with_category_ids
+    #     }
+  
+    #     include_examples '#create', product_options do
+    #       let!(:url) { url }
+    #     end
+    #   end
+    # end
   end
 end
 
