@@ -10,4 +10,5 @@ class ComponentSerializer
              :is_enabled
 
   has_many :options, serializer: ProductSerializer
+  # has_many :options, serializer: ProductSerializer, if: Proc.new { |record| record.options && record.options.any? }
 end

@@ -20,6 +20,24 @@ CREATE TYPE public.product_type AS ENUM (
 );
 
 
+--
+-- Name: product_unit; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.product_unit AS ENUM (
+    'piece',
+    'gallon',
+    'quart',
+    'pint',
+    'cup',
+    'fluid_once',
+    'tablespoon',
+    'teaspoon',
+    'pound',
+    'ounce'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -180,7 +198,6 @@ CREATE TABLE public.products (
     description text NOT NULL,
     image character varying,
     inventory_amount integer,
-    inventory_unit_type character varying,
     is_visible boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -190,7 +207,8 @@ CREATE TABLE public.products (
     sales_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     sale_price_cents integer,
     sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    type character varying NOT NULL
+    type character varying NOT NULL,
+    unit_of_measure public.product_unit NOT NULL
 );
 
 
@@ -454,6 +472,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210222162348'),
 ('20210222165641'),
 ('20210222165823'),
-('20210222222650');
+('20210222222650'),
+('20210410145521'),
+('20210410150312'),
+('20210410164854');
 
 

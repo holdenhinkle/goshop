@@ -62,7 +62,7 @@ module Api
                   :min_quantity,
                   :max_quantity,
                   :is_enabled,
-                  product_option_ids: []
+                  option_ids: [],
           )
       end
 
@@ -76,7 +76,7 @@ module Api
 
       def render_404_as_json
         payload = {
-          error: "The requested component does't exist",
+          error: "The requested component doesn't exist",
           status: 404
         }
 
