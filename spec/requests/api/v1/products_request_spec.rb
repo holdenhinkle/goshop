@@ -180,6 +180,56 @@ RSpec.describe Api::V1::ProductsController, type: :request do
       let!(:url) { url }
     end
   end
+
+  describe '#destroy' do
+    include_examples '#destroy', {
+      type: 'simple',
+      relationships_by: 'category ids',
+      factory: :simple_product_with_category_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#destroy', {
+      type: 'simple',
+      relationships_by: 'category attributes',
+      factory: :simple_product_with_categories_attributes
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#destroy', {
+      type: 'composite',
+      relationships_by: 'category ids and component ids',
+      factory: :composite_product_with_category_ids_and_component_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#destroy', {
+      type: 'composite',
+      relationships_by: 'category ids and component attributes',
+      factory: :composite_product_with_category_ids_and_component_attributes
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#destroy', {
+      type: 'composite',
+      relationships_by: 'category attributes and component ids',
+      factory: :composite_product_with_category_attributes_and_component_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#destroy', {
+      type: 'composite',
+      relationships_by: 'category attributes and components attributes',
+      factory: :composite_product_with_category_attributes_and_component_attributes
+    } do
+      let!(:url) { url }
+    end
+  end
 end
 
 # to-do:
