@@ -23,7 +23,7 @@ FactoryBot.define do
 
   factory :simple_product_with_categories_attributes, parent: :product, class: Simple do
     type { 'Simple' }
-    categories_attributes { [attributes_for(:category)] }
+    categories_attributes { [attributes_for(:category), attributes_for(:category)] }
   end
 
   # BEGIN used in #index and #show -- update later
@@ -46,7 +46,7 @@ FactoryBot.define do
   factory :composite_product_with_components_attributes, parent: :product, class: Composite do
     type { 'Composite' }
     categories_attributes { [attributes_for(:category), attributes_for(:category)] }
-    components_attributes { [attributes_for(:component)] }
+    components_attributes { [attributes_for(:component), attributes_for(:component)] }
   end
   # END used in #index and #show -- update later
 
@@ -75,12 +75,12 @@ FactoryBot.define do
       end
     end
 
-    components_attributes { [attributes_for(:component)] }
+    components_attributes { [attributes_for(:component), attributes_for(:component)] }
   end
 
   factory :composite_product_with_category_attributes_and_component_ids, parent: :product, class: Composite do
     type { 'Composite' }
-    categories_attributes { [attributes_for(:category)] }
+    categories_attributes { [attributes_for(:category), attributes_for(:category)] }
 
     component_ids do
       [create(:component), create(:component)].each_with_object([]) do |component, array|
@@ -91,8 +91,8 @@ FactoryBot.define do
 
   factory :composite_product_with_category_attributes_and_component_attributes, parent: :product, class: Composite do
     type { 'Composite' }
-    categories_attributes { [attributes_for(:category)] }
-    components_attributes { [attributes_for(:component)] }
+    categories_attributes { [attributes_for(:category), attributes_for(:category)] }
+    components_attributes { [attributes_for(:component), attributes_for(:component)] }
   end
 
   trait :product_no_name do
