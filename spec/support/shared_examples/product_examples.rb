@@ -116,11 +116,11 @@ RSpec.shared_examples '#show' do |product_type, relationships|
   end
 end
 
-RSpec.shared_examples '#create' do |product_options|
-  product_factory = product_options[:factory]
+RSpec.shared_examples '#create' do |test_params|
+  product_factory = test_params[:factory]
 
   context 'valid request with only required attributes' do
-    context "required category added by #{product_options[:by_category]} attribute" do
+    context "with #{test_params[:relationships_by]}" do
       before do
         product_attributes = attributes_for(product_factory)
         post(url, params: { product: product_attributes })
@@ -134,9 +134,9 @@ RSpec.shared_examples '#create' do |product_options|
         product = JSON.parse(response.body)['data']
   
         expect(product.keys).to match_array(%w[id type attributes relationships])
-        expect(product['type']).to eq(product_options[:type])
+        expect(product['type']).to eq(test_params[:type])
         expect(product['attributes'].keys).to match_array(%w[name description image type regularPriceCents salePriceCents inventoryAmount unitOfMeasure isVisible slug])
-        expect(product['relationships'].keys).to match_array(%w[categories])
+        expect(product['relationships'].keys).to match_array(test_params[:relationships])
         expect(product['relationships']['categories'].keys).to match_array(%w[data])
   
         product['relationships']['categories']['data'].each do |category|
@@ -287,5 +287,5 @@ RSpec.shared_examples '#create' do |product_options|
         expect(body['errors']['unit_of_measure'][0]).to eq("can't be blank")
       end
     end
-  end  
+  end
 end
