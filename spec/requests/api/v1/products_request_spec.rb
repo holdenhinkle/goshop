@@ -71,8 +71,24 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  # # to-do:
-  # # test pricing => you can enter 999 or 9.99 and regularPriceCents will be 999
-  # # sales_price_currency {} -- delete this one?
-  # # sale_price_currency {} -- or delete this one?
+  describe '#create' do
+    ['category ids', 'category attributes'].each do |category|
+      context "simple product with #{category}" do
+        product_options = {
+          type: 'simple',
+          by_category: category,
+          factory: :simple_product_with_category_ids
+        }
+  
+        include_examples '#create', product_options do
+          let!(:url) { url }
+        end
+      end
+    end
+  end
 end
+
+# to-do:
+# test pricing => you can enter 999 or 9.99 and regularPriceCents will be 999
+# sales_price_currency {} -- delete this one?
+# sale_price_currency {} -- or delete this one?
