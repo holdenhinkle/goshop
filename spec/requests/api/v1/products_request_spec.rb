@@ -130,19 +130,55 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-    # ['category ids', 'category attributes'].each do |category|
-    #   context "simple product with #{category}" do
-    #     product_options = {
-    #       type: 'simple',
-    #       by_category: category,
-    #       factory: :simple_product_with_category_ids
-    #     }
-  
-    #     include_examples '#create', product_options do
-    #       let!(:url) { url }
-    #     end
-    #   end
-    # end
+  describe '#update' do
+    # test updating component
+    include_examples '#update', {
+      type: 'simple',
+      relationships_by: 'category ids',
+      factory: :simple_product_with_category_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#update', {
+      type: 'simple',
+      relationships_by: 'category attributes',
+      factory: :simple_product_with_categories_attributes
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#update', {
+      type: 'composite',
+      relationships_by: 'category ids and component ids',
+      factory: :composite_product_with_category_ids_and_component_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#update', {
+      type: 'composite',
+      relationships_by: 'category ids and component attributes',
+      factory: :composite_product_with_category_ids_and_component_attributes
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#update', {
+      type: 'composite',
+      relationships_by: 'category attributes and component ids',
+      factory: :composite_product_with_category_attributes_and_component_ids
+    } do
+      let!(:url) { url }
+    end
+
+    include_examples '#update', {
+      type: 'composite',
+      relationships_by: 'category attributes and components attributes',
+      factory: :composite_product_with_category_attributes_and_component_attributes
+    } do
+      let!(:url) { url }
+    end
   end
 end
 
