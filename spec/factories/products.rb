@@ -26,6 +26,7 @@ FactoryBot.define do
     categories_attributes { [attributes_for(:category)] }
   end
 
+  # BEGIN used in #index and #show -- update later
   factory :composite_product_with_component_ids, parent: :product, class: Composite do
     type { 'Composite' }
 
@@ -45,6 +46,52 @@ FactoryBot.define do
   factory :composite_product_with_components_attributes, parent: :product, class: Composite do
     type { 'Composite' }
     categories_attributes { [attributes_for(:category), attributes_for(:category)] }
+    components_attributes { [attributes_for(:component)] }
+  end
+  # END used in #index and #show -- update later
+
+  factory :composite_product_with_category_ids_and_component_ids, parent: :product, class: Composite do
+    type { 'Composite' }
+
+    category_ids do
+      [create(:category), create(:category)].each_with_object([]) do 
+        |category, array| array << category.id
+      end
+    end
+
+    component_ids do
+      [create(:component), create(:component)].each_with_object([]) do |component, array|
+        array << component.id
+      end
+    end
+  end
+
+  factory :composite_product_with_category_ids_and_component_attributes, parent: :product, class: Composite do
+    type { 'Composite' }
+
+    category_ids do
+      [create(:category), create(:category)].each_with_object([]) do 
+        |category, array| array << category.id
+      end
+    end
+
+    components_attributes { [attributes_for(:component)] }
+  end
+
+  factory :composite_product_with_category_attributes_and_component_ids, parent: :product, class: Composite do
+    type { 'Composite' }
+    categories_attributes { [attributes_for(:category)] }
+
+    component_ids do
+      [create(:component), create(:component)].each_with_object([]) do |component, array|
+        array << component.id
+      end
+    end
+  end
+
+  factory :composite_product_with_category_attributes_and_component_attributes, parent: :product, class: Composite do
+    type { 'Composite' }
+    categories_attributes { [attributes_for(:category)] }
     components_attributes { [attributes_for(:component)] }
   end
 
