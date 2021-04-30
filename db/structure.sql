@@ -241,7 +241,7 @@ CREATE TABLE public.products (
     sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     type character varying NOT NULL,
     unit_of_measure public.product_unit NOT NULL,
-    accounts_id bigint NOT NULL
+    account_id bigint NOT NULL
 );
 
 
@@ -470,10 +470,10 @@ CREATE UNIQUE INDEX index_product_components_on_composite_id_and_component_id ON
 
 
 --
--- Name: index_products_on_accounts_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_products_on_account_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_accounts_id ON public.products USING btree (accounts_id);
+CREATE INDEX index_products_on_account_id ON public.products USING btree (account_id);
 
 
 --
@@ -502,7 +502,7 @@ CREATE INDEX index_products_on_type ON public.products USING btree (type);
 --
 
 ALTER TABLE ONLY public.products
-    ADD CONSTRAINT fk_rails_995d23b720 FOREIGN KEY (accounts_id) REFERENCES public.accounts(id);
+    ADD CONSTRAINT fk_rails_995d23b720 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
 
 
 --
@@ -549,6 +549,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210430010855'),
 ('20210430012340'),
 ('20210430014033'),
-('20210430020459');
+('20210430020459'),
+('20210430022017');
 
 
