@@ -87,6 +87,35 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: available_tenant_ids; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.available_tenant_ids (
+    id bigint NOT NULL,
+    tenant_id character varying NOT NULL
+);
+
+
+--
+-- Name: available_tenant_ids_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.available_tenant_ids_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: available_tenant_ids_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.available_tenant_ids_id_seq OWNED BY public.available_tenant_ids.id;
+
+
+--
 -- Name: categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -281,6 +310,13 @@ ALTER TABLE ONLY public.accounts ALTER COLUMN id SET DEFAULT nextval('public.acc
 
 
 --
+-- Name: available_tenant_ids id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.available_tenant_ids ALTER COLUMN id SET DEFAULT nextval('public.available_tenant_ids_id_seq'::regclass);
+
+
+--
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -322,6 +358,14 @@ ALTER TABLE ONLY public.accounts
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: available_tenant_ids available_tenant_ids_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.available_tenant_ids
+    ADD CONSTRAINT available_tenant_ids_pkey PRIMARY KEY (id);
 
 
 --
@@ -550,6 +594,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210430012340'),
 ('20210430014033'),
 ('20210430020459'),
-('20210430022017');
+('20210430022017'),
+('20210430025138'),
+('20210430030241');
 
 
