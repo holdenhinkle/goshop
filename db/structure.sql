@@ -241,7 +241,7 @@ CREATE TABLE public.products (
     sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     type character varying NOT NULL,
     unit_of_measure public.product_unit NOT NULL,
-    accounts_id bigint
+    accounts_id bigint NOT NULL
 );
 
 
@@ -547,6 +547,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210410150312'),
 ('20210410164854'),
 ('20210430010855'),
-('20210430012340');
+('20210430012340'),
+('20210430014033');
 
 
