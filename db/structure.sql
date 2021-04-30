@@ -48,7 +48,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.accounts (
     id bigint NOT NULL,
-    tentant_id character varying NOT NULL,
+    tenant_id character varying NOT NULL,
     name character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -365,10 +365,10 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: index_accounts_on_tentant_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_accounts_on_tenant_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_accounts_on_tentant_id ON public.accounts USING btree (tentant_id);
+CREATE INDEX index_accounts_on_tenant_id ON public.accounts USING btree (tenant_id);
 
 
 --
@@ -548,6 +548,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210410164854'),
 ('20210430010855'),
 ('20210430012340'),
-('20210430014033');
+('20210430014033'),
+('20210430020459');
 
 
