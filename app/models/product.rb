@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+  acts_as_tenant :account
   # To-do:
   # Delete sales_price_currency or sale_price_currency. Which is correct?
 
