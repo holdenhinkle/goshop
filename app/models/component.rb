@@ -1,4 +1,6 @@
 class Component < ApplicationRecord
+  acts_as_tenant :account
+  
   validates_presence_of :name, :description, :min_quantity
   validates :name, uniqueness: true
 
