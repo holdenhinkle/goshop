@@ -126,7 +126,8 @@ CREATE TABLE public.categories (
     image character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying
+    slug character varying,
+    account_id bigint NOT NULL
 );
 
 
@@ -173,7 +174,8 @@ CREATE TABLE public.components (
     max_quantity integer,
     is_enabled boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    account_id bigint NOT NULL
 );
 
 
@@ -416,6 +418,13 @@ CREATE INDEX index_accounts_on_tenant_id ON public.accounts USING btree (tenant_
 
 
 --
+-- Name: index_categories_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_categories_on_account_id ON public.categories USING btree (account_id);
+
+
+--
 -- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -441,6 +450,13 @@ CREATE INDEX index_component_product_options_on_component_id ON public.component
 --
 
 CREATE INDEX index_component_product_options_on_product_id ON public.component_product_options USING btree (product_id);
+
+
+--
+-- Name: index_components_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_components_on_account_id ON public.components USING btree (account_id);
 
 
 --
@@ -542,11 +558,27 @@ CREATE INDEX index_products_on_type ON public.products USING btree (type);
 
 
 --
+-- Name: components fk_rails_41e81b33a3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components
+    ADD CONSTRAINT fk_rails_41e81b33a3 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
 -- Name: products fk_rails_995d23b720; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.products
     ADD CONSTRAINT fk_rails_995d23b720 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: categories fk_rails_df80999855; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT fk_rails_df80999855 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
 
 
 --
@@ -596,6 +628,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210430020459'),
 ('20210430022017'),
 ('20210430025138'),
-('20210430030241');
+('20210430030241'),
+('20210501021804'),
+('20210501022943'),
+('20210501023302'),
+('20210501023456'),
+('20210501023741');
 
 
