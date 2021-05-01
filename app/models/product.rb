@@ -27,7 +27,7 @@ class Product < ApplicationRecord
   has_many :categories, through: :product_categories
 
   validates_presence_of :name, :description, :type, :regular_price_cents, :unit_of_measure, :categories
-  validates :name, uniqueness: true
+  validates_uniqueness_to_tenant :name
   validates :regular_price_cents, numericality: { greater_than: 0 }
 
   # if you try to create a new category with a category name that already exists
