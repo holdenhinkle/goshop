@@ -428,14 +428,14 @@ CREATE INDEX index_categories_on_account_id ON public.categories USING btree (ac
 -- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_categories_on_name ON public.categories USING btree (name);
+CREATE INDEX index_categories_on_name ON public.categories USING btree (name);
 
 
 --
 -- Name: index_categories_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_categories_on_slug ON public.categories USING btree (slug);
+CREATE INDEX index_categories_on_slug ON public.categories USING btree (slug);
 
 
 --
@@ -463,14 +463,14 @@ CREATE INDEX index_components_on_account_id ON public.components USING btree (ac
 -- Name: index_components_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_components_on_name ON public.components USING btree (name);
+CREATE INDEX index_components_on_name ON public.components USING btree (name);
 
 
 --
 -- Name: index_components_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_components_on_slug ON public.components USING btree (slug);
+CREATE INDEX index_components_on_slug ON public.components USING btree (slug);
 
 
 --
@@ -540,14 +540,14 @@ CREATE INDEX index_products_on_account_id ON public.products USING btree (accoun
 -- Name: index_products_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_products_on_name ON public.products USING btree (name);
+CREATE INDEX index_products_on_name ON public.products USING btree (name);
 
 
 --
 -- Name: index_products_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_products_on_slug ON public.products USING btree (slug);
+CREATE INDEX index_products_on_slug ON public.products USING btree (slug);
 
 
 --
@@ -633,6 +633,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210501022943'),
 ('20210501023302'),
 ('20210501023456'),
-('20210501023741');
+('20210501023741'),
+('20210501030345'),
+('20210501030719'),
+('20210501030827'),
+('20210501031015');
 
 
