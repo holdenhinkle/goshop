@@ -6,7 +6,6 @@ module Api
       before_action :set_account, only: [:update, :show]
 
       def show
-        binding.pry
         if @account
           render_account_as_json(@account)
         else
