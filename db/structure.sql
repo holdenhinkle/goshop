@@ -43,6 +43,38 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: accounts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.accounts (
+    id bigint NOT NULL,
+    tenant_id character varying NOT NULL,
+    name character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: accounts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.accounts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: accounts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.accounts_id_seq OWNED BY public.accounts.id;
+
+
+--
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -52,6 +84,35 @@ CREATE TABLE public.ar_internal_metadata (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
+
+
+--
+-- Name: available_tenant_ids; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.available_tenant_ids (
+    id bigint NOT NULL,
+    tenant_id character varying NOT NULL
+);
+
+
+--
+-- Name: available_tenant_ids_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.available_tenant_ids_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: available_tenant_ids_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.available_tenant_ids_id_seq OWNED BY public.available_tenant_ids.id;
 
 
 --
@@ -65,7 +126,8 @@ CREATE TABLE public.categories (
     image character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying
+    slug character varying,
+    account_id bigint NOT NULL
 );
 
 
@@ -112,7 +174,8 @@ CREATE TABLE public.components (
     max_quantity integer,
     is_enabled boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    account_id bigint NOT NULL
 );
 
 
@@ -208,7 +271,8 @@ CREATE TABLE public.products (
     sale_price_cents integer,
     sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     type character varying NOT NULL,
-    unit_of_measure public.product_unit NOT NULL
+    unit_of_measure public.product_unit NOT NULL,
+    account_id bigint NOT NULL
 );
 
 
@@ -241,6 +305,20 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: accounts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.accounts ALTER COLUMN id SET DEFAULT nextval('public.accounts_id_seq'::regclass);
+
+
+--
+-- Name: available_tenant_ids id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.available_tenant_ids ALTER COLUMN id SET DEFAULT nextval('public.available_tenant_ids_id_seq'::regclass);
+
+
+--
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -269,11 +347,27 @@ ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: available_tenant_ids available_tenant_ids_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.available_tenant_ids
+    ADD CONSTRAINT available_tenant_ids_pkey PRIMARY KEY (id);
 
 
 --
@@ -317,17 +411,31 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: index_accounts_on_tenant_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_accounts_on_tenant_id ON public.accounts USING btree (tenant_id);
+
+
+--
+-- Name: index_categories_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_categories_on_account_id ON public.categories USING btree (account_id);
+
+
+--
 -- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_categories_on_name ON public.categories USING btree (name);
+CREATE INDEX index_categories_on_name ON public.categories USING btree (name);
 
 
 --
 -- Name: index_categories_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_categories_on_slug ON public.categories USING btree (slug);
+CREATE INDEX index_categories_on_slug ON public.categories USING btree (slug);
 
 
 --
@@ -345,17 +453,24 @@ CREATE INDEX index_component_product_options_on_product_id ON public.component_p
 
 
 --
+-- Name: index_components_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_components_on_account_id ON public.components USING btree (account_id);
+
+
+--
 -- Name: index_components_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_components_on_name ON public.components USING btree (name);
+CREATE INDEX index_components_on_name ON public.components USING btree (name);
 
 
 --
 -- Name: index_components_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_components_on_slug ON public.components USING btree (slug);
+CREATE INDEX index_components_on_slug ON public.components USING btree (slug);
 
 
 --
@@ -415,17 +530,24 @@ CREATE UNIQUE INDEX index_product_components_on_composite_id_and_component_id ON
 
 
 --
+-- Name: index_products_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_products_on_account_id ON public.products USING btree (account_id);
+
+
+--
 -- Name: index_products_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_products_on_name ON public.products USING btree (name);
+CREATE INDEX index_products_on_name ON public.products USING btree (name);
 
 
 --
 -- Name: index_products_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_products_on_slug ON public.products USING btree (slug);
+CREATE INDEX index_products_on_slug ON public.products USING btree (slug);
 
 
 --
@@ -433,6 +555,30 @@ CREATE UNIQUE INDEX index_products_on_slug ON public.products USING btree (slug)
 --
 
 CREATE INDEX index_products_on_type ON public.products USING btree (type);
+
+
+--
+-- Name: components fk_rails_41e81b33a3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components
+    ADD CONSTRAINT fk_rails_41e81b33a3 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: products fk_rails_995d23b720; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.products
+    ADD CONSTRAINT fk_rails_995d23b720 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: categories fk_rails_df80999855; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT fk_rails_df80999855 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
 
 
 --
@@ -475,6 +621,22 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210222222650'),
 ('20210410145521'),
 ('20210410150312'),
-('20210410164854');
+('20210410164854'),
+('20210430010855'),
+('20210430012340'),
+('20210430014033'),
+('20210430020459'),
+('20210430022017'),
+('20210430025138'),
+('20210430030241'),
+('20210501021804'),
+('20210501022943'),
+('20210501023302'),
+('20210501023456'),
+('20210501023741'),
+('20210501030345'),
+('20210501030719'),
+('20210501030827'),
+('20210501031015');
 
 

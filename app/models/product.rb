@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+  acts_as_tenant :account
   # To-do:
   # Delete sales_price_currency or sale_price_currency. Which is correct?
 
@@ -26,7 +27,7 @@ class Product < ApplicationRecord
   has_many :categories, through: :product_categories
 
   validates_presence_of :name, :description, :type, :regular_price_cents, :unit_of_measure, :categories
-  validates :name, uniqueness: true
+  validates_uniqueness_to_tenant :name
   validates :regular_price_cents, numericality: { greater_than: 0 }
 
   # if you try to create a new category with a category name that already exists
