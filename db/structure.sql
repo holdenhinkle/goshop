@@ -10,6 +10,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
 -- Name: product_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -47,31 +61,12 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.accounts (
-    id bigint NOT NULL,
     tenant_id character varying NOT NULL,
     name character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: accounts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.accounts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: accounts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.accounts_id_seq OWNED BY public.accounts.id;
 
 
 --
@@ -120,34 +115,15 @@ ALTER SEQUENCE public.available_tenant_ids_id_seq OWNED BY public.available_tena
 --
 
 CREATE TABLE public.categories (
-    id bigint NOT NULL,
     name character varying NOT NULL,
     description text NOT NULL,
     image character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     slug character varying,
-    account_id bigint NOT NULL
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    account_id uuid NOT NULL
 );
-
-
---
--- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
@@ -165,7 +141,6 @@ CREATE TABLE public.component_product_options (
 --
 
 CREATE TABLE public.components (
-    id bigint NOT NULL,
     name character varying NOT NULL,
     description character varying NOT NULL,
     slug character varying,
@@ -175,27 +150,9 @@ CREATE TABLE public.components (
     is_enabled boolean DEFAULT true NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    account_id bigint NOT NULL
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    account_id uuid NOT NULL
 );
-
-
---
--- Name: components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.components_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.components_id_seq OWNED BY public.components.id;
 
 
 --
@@ -236,8 +193,8 @@ ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs
 --
 
 CREATE TABLE public.product_categories (
-    product_id bigint NOT NULL,
-    category_id bigint NOT NULL
+    product_id uuid NOT NULL,
+    category_id uuid NOT NULL
 );
 
 
@@ -246,8 +203,8 @@ CREATE TABLE public.product_categories (
 --
 
 CREATE TABLE public.product_components (
-    composite_id bigint NOT NULL,
-    component_id bigint NOT NULL
+    composite_id uuid NOT NULL,
+    component_id uuid NOT NULL
 );
 
 
@@ -256,7 +213,6 @@ CREATE TABLE public.product_components (
 --
 
 CREATE TABLE public.products (
-    id bigint NOT NULL,
     name character varying NOT NULL,
     description text NOT NULL,
     image character varying,
@@ -272,27 +228,9 @@ CREATE TABLE public.products (
     sale_price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     type character varying NOT NULL,
     unit_of_measure public.product_unit NOT NULL,
-    account_id bigint NOT NULL
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    account_id uuid NOT NULL
 );
-
-
---
--- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.products_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 
 
 --
@@ -305,13 +243,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: accounts id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.accounts ALTER COLUMN id SET DEFAULT nextval('public.accounts_id_seq'::regclass);
-
-
---
 -- Name: available_tenant_ids id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -319,31 +250,10 @@ ALTER TABLE ONLY public.available_tenant_ids ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
-
-
---
--- Name: components id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.components ALTER COLUMN id SET DEFAULT nextval('public.components_id_seq'::regclass);
-
-
---
 -- Name: friendly_id_slugs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.friendly_id_slugs ALTER COLUMN id SET DEFAULT nextval('public.friendly_id_slugs_id_seq'::regclass);
-
-
---
--- Name: products id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.products_id_seq'::regclass);
 
 
 --
@@ -408,6 +318,20 @@ ALTER TABLE ONLY public.products
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: idx_product_categories_on_product_id_and_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_product_categories_on_product_id_and_category_id ON public.product_categories USING btree (product_id, category_id);
+
+
+--
+-- Name: idx_product_components_on_composite_id_and_component_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_product_components_on_composite_id_and_component_id ON public.product_components USING btree (composite_id, component_id);
 
 
 --
@@ -523,13 +447,6 @@ CREATE INDEX index_product_components_on_composite_id ON public.product_componen
 
 
 --
--- Name: index_product_components_on_composite_id_and_component_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_product_components_on_composite_id_and_component_id ON public.product_components USING btree (composite_id, component_id);
-
-
---
 -- Name: index_products_on_account_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -558,27 +475,59 @@ CREATE INDEX index_products_on_type ON public.products USING btree (type);
 
 
 --
--- Name: components fk_rails_41e81b33a3; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: product_categories fk_rails_005b71ca83; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.components
-    ADD CONSTRAINT fk_rails_41e81b33a3 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
-
-
---
--- Name: products fk_rails_995d23b720; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.products
-    ADD CONSTRAINT fk_rails_995d23b720 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+ALTER TABLE ONLY public.product_categories
+    ADD CONSTRAINT fk_rails_005b71ca83 FOREIGN KEY (category_id) REFERENCES public.categories(id);
 
 
 --
--- Name: categories fk_rails_df80999855; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: categories fk_rails_4fd3bba7e8; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.categories
-    ADD CONSTRAINT fk_rails_df80999855 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+    ADD CONSTRAINT fk_rails_4fd3bba7e8 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: products fk_rails_6dc06b37ef; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.products
+    ADD CONSTRAINT fk_rails_6dc06b37ef FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: product_categories fk_rails_98a9a32a41; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_categories
+    ADD CONSTRAINT fk_rails_98a9a32a41 FOREIGN KEY (product_id) REFERENCES public.products(id);
+
+
+--
+-- Name: product_components fk_rails_bbf1586c23; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_components
+    ADD CONSTRAINT fk_rails_bbf1586c23 FOREIGN KEY (composite_id) REFERENCES public.products(id);
+
+
+--
+-- Name: components fk_rails_e780d8f3f0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.components
+    ADD CONSTRAINT fk_rails_e780d8f3f0 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: product_components fk_rails_fbcdf8b6ea; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_components
+    ADD CONSTRAINT fk_rails_fbcdf8b6ea FOREIGN KEY (component_id) REFERENCES public.categories(id);
 
 
 --
@@ -637,6 +586,17 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210501030345'),
 ('20210501030719'),
 ('20210501030827'),
-('20210501031015');
+('20210501031015'),
+('20210523204433'),
+('20210523204816'),
+('20210523205924'),
+('20210523212350'),
+('20210523213140'),
+('20210523213709'),
+('20210523214116'),
+('20210523215049'),
+('20210523215559'),
+('20210523220223'),
+('20210523221936');
 
 
