@@ -86,28 +86,9 @@ CREATE TABLE public.ar_internal_metadata (
 --
 
 CREATE TABLE public.available_tenant_ids (
-    id bigint NOT NULL,
-    tenant_id character varying NOT NULL
+    tenant_id character varying NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: available_tenant_ids_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.available_tenant_ids_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: available_tenant_ids_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.available_tenant_ids_id_seq OWNED BY public.available_tenant_ids.id;
 
 
 --
@@ -131,8 +112,8 @@ CREATE TABLE public.categories (
 --
 
 CREATE TABLE public.component_product_options (
-    component_id bigint NOT NULL,
-    product_id bigint NOT NULL
+    component_id uuid NOT NULL,
+    product_id uuid NOT NULL
 );
 
 
@@ -243,13 +224,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: available_tenant_ids id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.available_tenant_ids ALTER COLUMN id SET DEFAULT nextval('public.available_tenant_ids_id_seq'::regclass);
-
-
---
 -- Name: friendly_id_slugs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -318,6 +292,13 @@ ALTER TABLE ONLY public.products
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: idx_component_product_options_on_component_id_and_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_component_product_options_on_component_id_and_product_id ON public.component_product_options USING btree (component_id, product_id);
 
 
 --
@@ -483,11 +464,27 @@ ALTER TABLE ONLY public.product_categories
 
 
 --
+-- Name: component_product_options fk_rails_47b8bb0341; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.component_product_options
+    ADD CONSTRAINT fk_rails_47b8bb0341 FOREIGN KEY (component_id) REFERENCES public.products(id);
+
+
+--
 -- Name: categories fk_rails_4fd3bba7e8; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT fk_rails_4fd3bba7e8 FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: component_product_options fk_rails_5169cfcbe6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.component_product_options
+    ADD CONSTRAINT fk_rails_5169cfcbe6 FOREIGN KEY (product_id) REFERENCES public.categories(id);
 
 
 --
@@ -597,6 +594,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210523215049'),
 ('20210523215559'),
 ('20210523220223'),
-('20210523221936');
+('20210523221936'),
+('20210524102727'),
+('20210524103750');
 
 
