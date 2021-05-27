@@ -20,6 +20,6 @@ class ApplicationController < ActionController::API
       params[:tenant_id].match(regex)
     end
 
-    false
+    true
   end
 end
