@@ -95,13 +95,11 @@ module Api
                     :inventory_amount,
                     :unit_of_measure,
                     :is_visible,
-                    category_slugs: [],
-                    # category_ids: [],
-                    component_ids: [],
-                    categories_attributes: [:id,
+                    component_ids: [], # handle this
+                    categories_attributes: [:id, # remove id
                                             :name,
                                             :description],
-                    components_attributes: [:id,
+                    components_attributes: [:id, # remove id
                                             :name,
                                             :description,
                                             :image,
@@ -109,7 +107,7 @@ module Api
                                             :min_quantity,
                                             :max_quantity,
                                             :is_enabled,
-                                            product_option_ids: []
+                                            product_option_ids: [] # handle this
                                            ]
             )
       end
