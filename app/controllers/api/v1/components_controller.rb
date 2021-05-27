@@ -47,16 +47,15 @@ module Api
       private
 
       def set_component
-        begin
-          @component = Component.friendly.find(params[:id])
-        rescue ActiveRecord::RecordNotFound => e
-          @component = nil
-        end
+        @component = Component.friendly.find(params[:id])
+      rescue ActiveRecord::RecordNotFound => e
+        @component = nil
       end
 
       def component_params
         params.require(:component)
-          .permit(:name,
+          .permit(:id
+                  :name,
                   :description,
                   :image,
                   :min_quantity,

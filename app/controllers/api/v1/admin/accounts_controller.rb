@@ -53,11 +53,9 @@ module Api
         private
 
         def set_account
-          begin
-            @account = Account.find(params[:id])
-          rescue ActiveRecord::RecordNotFound => e
-            @account = nil
-          end
+          @account = Account.find(params[:id])
+        rescue ActiveRecord::RecordNotFound => e
+          @account = nil
         end
 
         def account_params

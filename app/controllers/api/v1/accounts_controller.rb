@@ -26,11 +26,9 @@ module Api
       private
 
       def set_account
-        begin
-          @account = Account.find_by(tenant_id: params[:tenant_id])
-        rescue ActiveRecord::RecordNotFound => e
-          @account = nil
-        end
+        @account = Account.find_by(tenant_id: params[:tenant_id])
+      rescue ActiveRecord::RecordNotFound => e
+        @account = nil
       end
 
       def account_params

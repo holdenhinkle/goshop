@@ -98,7 +98,9 @@ module Api
                     component_ids: [],
                     categories_attributes: [:id,
                                             :name,
-                                            :description],
+                                            :description,
+                                            :image
+                    ],
                     components_attributes: [:id,
                                             :name,
                                             :description,
@@ -108,7 +110,7 @@ module Api
                                             :max_quantity,
                                             :is_enabled,
                                             product_option_ids: []
-                                           ]
+                    ]
             )
       end
 
