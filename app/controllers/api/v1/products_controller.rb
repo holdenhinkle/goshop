@@ -5,7 +5,6 @@ module Api
 
       def index
         products = Product.all
-
         render json: ProductSerializer.new(products).serializable_hash.to_json
       end
 
@@ -19,8 +18,9 @@ module Api
 
       def create
         update_decimal_prices
-
         product = Product.new(product_params)
+        slugs = params[:product][:category_slugs]
+        product.category_slugs(slugs) if slugs.present?
 
         if product.save
           render_product_as_json(product)
@@ -95,8 +95,8 @@ module Api
                     :inventory_amount,
                     :unit_of_measure,
                     :is_visible,
-                    category_names: [],
-                    category_ids: [],
+                    category_slugs: [],
+                    # category_ids: [],
                     component_ids: [],
                     categories_attributes: [:id,
                                             :name,
