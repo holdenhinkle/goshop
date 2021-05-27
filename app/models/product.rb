@@ -37,6 +37,13 @@ class Product < ApplicationRecord
     self.categories << categories if categories.present?
   end
 
+  def component_slugs(slugs)
+    components = slugs.map { |slug| Component.find_by(slug: slug) }
+                      .filter { |component| component }
+
+    self.components << components if components.present?
+  end
+
   # if you try to create a new category with a category name that already exists
   # a relationship with the existing category of the same name is created.
   # a new category is not created.
