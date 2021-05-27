@@ -20,8 +20,12 @@ module Api
         update_decimal_prices
 
         product = Product.new(product_params)
-        slugs = params[:product][:category_slugs]
-        product.category_slugs(slugs) if slugs.present?
+
+        category_slugs = params[:product][:category_slugs]
+        product.category_slugs(category_slugs) if category_slugs.present?
+
+        component_slugs = params[:product][:component_slugs]
+        product.component_slugs(component_slugs) if component_slugs.present?
 
         if product.save
           render_product_as_json(product)
@@ -96,7 +100,6 @@ module Api
                     :inventory_amount,
                     :unit_of_measure,
                     :is_visible,
-                    component_ids: [], # handle this
                     categories_attributes: [:id, # remove id
                                             :name,
                                             :description],
