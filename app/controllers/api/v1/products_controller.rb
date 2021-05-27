@@ -18,6 +18,7 @@ module Api
 
       def create
         update_decimal_prices
+
         product = Product.new(product_params)
         slugs = params[:product][:category_slugs]
         product.category_slugs(slugs) if slugs.present?
