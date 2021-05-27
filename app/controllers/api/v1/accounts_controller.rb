@@ -26,6 +26,7 @@ module Api
       private
 
       def set_account
+        raise ActiveRecord::RecordNotFound if is_uuid?
         @account = Account.find_by(tenant_id: params[:tenant_id])
       rescue ActiveRecord::RecordNotFound => e
         @account = nil

@@ -47,11 +47,10 @@ module Api
       private
 
       def set_component
-        begin
-          @component = Component.friendly.find(params[:id])
-        rescue ActiveRecord::RecordNotFound => e
-          @component = nil
-        end
+        raise ActiveRecord::RecordNotFound if is_uuid?
+        @component = Component.friendly.find(params[:id])
+      rescue ActiveRecord::RecordNotFound => e
+        @component = nil
       end
 
       def component_params

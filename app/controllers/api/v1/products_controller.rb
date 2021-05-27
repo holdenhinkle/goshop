@@ -95,6 +95,7 @@ module Api
                     :inventory_amount,
                     :unit_of_measure,
                     :is_visible,
+                    category_names: [],
                     category_ids: [],
                     component_ids: [],
                     categories_attributes: [:id,
@@ -133,10 +134,6 @@ module Api
         }
 
         render json: payload, status: 404   
-      end
-
-      def is_uuid?
-        params[:id].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
       end
     end
   end

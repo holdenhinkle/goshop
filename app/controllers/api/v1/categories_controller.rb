@@ -50,11 +50,10 @@ module Api
       private
 
       def set_category
-        begin
-          @category = Category.friendly.find(params[:id])
-        rescue ActiveRecord::RecordNotFound => e
-          @category = nil
-        end
+        raise ActiveRecord::RecordNotFound if is_uuid?
+        @category = Category.friendly.find(params[:id])
+      rescue ActiveRecord::RecordNotFound => e
+        @category = nil
       end
 
       def category_params
