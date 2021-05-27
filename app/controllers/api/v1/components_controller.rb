@@ -47,7 +47,6 @@ module Api
       private
 
       def set_component
-        raise ActiveRecord::RecordNotFound if is_uuid?
         @component = Component.friendly.find(params[:id])
       rescue ActiveRecord::RecordNotFound => e
         @component = nil
@@ -55,7 +54,8 @@ module Api
 
       def component_params
         params.require(:component)
-          .permit(:name,
+          .permit(:id
+                  :name,
                   :description,
                   :image,
                   :min_quantity,

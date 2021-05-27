@@ -50,14 +50,13 @@ module Api
       private
 
       def set_category
-        raise ActiveRecord::RecordNotFound if is_uuid?
         @category = Category.friendly.find(params[:id])
       rescue ActiveRecord::RecordNotFound => e
         @category = nil
       end
 
       def category_params
-        params.require(:category).permit(:name, :description, :image)
+        params.require(:category).permit(:id, :name, :description, :image)
       end
 
       def render_category_as_json(category)

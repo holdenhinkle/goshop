@@ -5,6 +5,7 @@ module Api
 
       def index
         products = Product.all
+
         render json: ProductSerializer.new(products).serializable_hash.to_json
       end
 
@@ -20,12 +21,6 @@ module Api
         update_decimal_prices
 
         product = Product.new(product_params)
-
-        category_slugs = params[:product][:category_slugs]
-        product.category_slugs(category_slugs) if category_slugs.present?
-
-        component_slugs = params[:product][:component_slugs]
-        product.component_slugs(component_slugs) if component_slugs.present?
 
         if product.save
           render_product_as_json(product)
@@ -82,7 +77,6 @@ module Api
       end
 
       def set_product
-        raise ActiveRecord::RecordNotFound if is_uuid?
         @product = Product.friendly.find(params[:id])
       rescue ActiveRecord::RecordNotFound => e
         @product = nil
@@ -100,10 +94,14 @@ module Api
                     :inventory_amount,
                     :unit_of_measure,
                     :is_visible,
-                    categories_attributes: [:id, # remove id
+                    category_ids: [],
+                    component_ids: [],
+                    categories_attributes: [:id,
                                             :name,
-                                            :description],
-                    components_attributes: [:id, # remove id
+                                            :description,
+                                            :image
+                    ],
+                    components_attributes: [:id,
                                             :name,
                                             :description,
                                             :image,
@@ -111,8 +109,8 @@ module Api
                                             :min_quantity,
                                             :max_quantity,
                                             :is_enabled,
-                                            product_option_ids: [] # handle this
-                                           ]
+                                            product_option_ids: []
+                    ]
             )
       end
 

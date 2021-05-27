@@ -30,20 +30,6 @@ class Product < ApplicationRecord
   validates_uniqueness_to_tenant :name
   validates :regular_price_cents, numericality: { greater_than: 0 }
 
-  def category_slugs(slugs)
-    categories = slugs.map { |slug| Category.find_by(slug: slug) }
-                      .filter { |category| category }
-
-    self.categories << categories if categories.present?
-  end
-
-  def component_slugs(slugs)
-    components = slugs.map { |slug| Component.find_by(slug: slug) }
-                      .filter { |component| component }
-
-    self.components << components if components.present?
-  end
-
   # if you try to create a new category with a category name that already exists
   # a relationship with the existing category of the same name is created.
   # a new category is not created.
