@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   scope ':tenant_id' do
     namespace :api do
       namespace :v1 do
