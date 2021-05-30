@@ -170,6 +170,36 @@ ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs
 
 
 --
+-- Name: jwt_denylist; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.jwt_denylist (
+    id bigint NOT NULL,
+    jti character varying NOT NULL,
+    expired_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: jwt_denylist_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.jwt_denylist_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: jwt_denylist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.jwt_denylist_id_seq OWNED BY public.jwt_denylist.id;
+
+
+--
 -- Name: product_categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -248,7 +278,8 @@ CREATE TABLE public.users (
     unconfirmed_email character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    accounts_id uuid
 );
 
 
@@ -257,6 +288,13 @@ CREATE TABLE public.users (
 --
 
 ALTER TABLE ONLY public.friendly_id_slugs ALTER COLUMN id SET DEFAULT nextval('public.friendly_id_slugs_id_seq'::regclass);
+
+
+--
+-- Name: jwt_denylist id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jwt_denylist ALTER COLUMN id SET DEFAULT nextval('public.jwt_denylist_id_seq'::regclass);
 
 
 --
@@ -305,6 +343,14 @@ ALTER TABLE ONLY public.components
 
 ALTER TABLE ONLY public.friendly_id_slugs
     ADD CONSTRAINT friendly_id_slugs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: jwt_denylist jwt_denylist_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jwt_denylist
+    ADD CONSTRAINT jwt_denylist_pkey PRIMARY KEY (id);
 
 
 --
@@ -437,6 +483,13 @@ CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON publi
 
 
 --
+-- Name: index_jwt_denylist_on_jti; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jwt_denylist_on_jti ON public.jwt_denylist USING btree (jti);
+
+
+--
 -- Name: index_product_categories_on_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -490,6 +543,13 @@ CREATE INDEX index_products_on_slug ON public.products USING btree (slug);
 --
 
 CREATE INDEX index_products_on_type ON public.products USING btree (type);
+
+
+--
+-- Name: index_users_on_accounts_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_accounts_id ON public.users USING btree (accounts_id);
 
 
 --
@@ -551,6 +611,14 @@ ALTER TABLE ONLY public.component_product_options
 
 ALTER TABLE ONLY public.products
     ADD CONSTRAINT fk_rails_6dc06b37ef FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: users fk_rails_8f58d885f9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_8f58d885f9 FOREIGN KEY (accounts_id) REFERENCES public.accounts(id);
 
 
 --
@@ -656,6 +724,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210524102727'),
 ('20210524103750'),
 ('20210529183654'),
-('20210529191233');
+('20210529191233'),
+('20210529220556'),
+('20210529222109');
 
 
