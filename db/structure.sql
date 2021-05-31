@@ -279,7 +279,7 @@ CREATE TABLE public.users (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    accounts_id uuid
+    account_id uuid
 );
 
 
@@ -546,10 +546,17 @@ CREATE INDEX index_products_on_type ON public.products USING btree (type);
 
 
 --
--- Name: index_users_on_accounts_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_users_on_account_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_users_on_accounts_id ON public.users USING btree (accounts_id);
+CREATE INDEX index_users_on_account_id ON public.users USING btree (account_id);
+
+
+--
+-- Name: index_users_on_account_id_and_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_account_id_and_email ON public.users USING btree (account_id, email);
 
 
 --
@@ -557,13 +564,6 @@ CREATE INDEX index_users_on_accounts_id ON public.users USING btree (accounts_id
 --
 
 CREATE UNIQUE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
-
-
---
--- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
@@ -606,19 +606,19 @@ ALTER TABLE ONLY public.component_product_options
 
 
 --
+-- Name: users fk_rails_61ac11da2b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_61ac11da2b FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
 -- Name: products fk_rails_6dc06b37ef; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.products
     ADD CONSTRAINT fk_rails_6dc06b37ef FOREIGN KEY (account_id) REFERENCES public.accounts(id);
-
-
---
--- Name: users fk_rails_8f58d885f9; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_rails_8f58d885f9 FOREIGN KEY (accounts_id) REFERENCES public.accounts(id);
 
 
 --
@@ -726,6 +726,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210529183654'),
 ('20210529191233'),
 ('20210529220556'),
-('20210529222109');
+('20210529222109'),
+('20210530161428'),
+('20210530182643'),
+('20210530183022');
 
 
