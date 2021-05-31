@@ -1,27 +1,29 @@
 Rails.application.routes.draw do
-  devise_for :users,
+  scope ':tenant_id' do
+    devise_for :users,
     defaults: { format: :json },
     path: '',
     path_names: {
-      sign_in: 'api/v1/login',
-      sign_out: 'api/v1/logout',
-      registration: 'api/v1/signup'
+      sign_in: 'api/v1/users/login',
+      sign_out: 'api/v1/users/logout',
+      password: 'api/v1/users/recover',
+      confirmation: 'api/v1/users/confirm',
+      registration: 'api/v1/users/register'
     },
     controllers: {
-      sessions: 'sessions',
-      registrations: 'registrations'
+      sessions: 'api/v1/sessions',
+      registrations: 'api/v1/registrations'
     }
 
-  scope ':tenant_id' do
     namespace :api do
       namespace :v1 do
         get 'account', to: 'accounts#show'
         put 'account', to: 'accounts#update'
         patch 'account', to: 'accounts#update'
-        resources :users, only: %w[index, show, create, update, delete]
-        resources :products, only: %w[index, show, create, update, delete]
-        resources :categories, only: %w[index, show, create, update, delete]
-        resources :components, only: %w[index, show, create, update, delete]
+        resources :users, only: [:index, :show, :update, :delete]
+        resources :products, only: [:index, :show, :create, :update, :delete]
+        resources :categories, only: [:index, :show, :create, :update, :delete]
+        resources :components, only: [:index, :show, :create, :update, :delete]
       end
     end
   end
@@ -30,7 +32,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       namespace :admin do
         resources :accounts
-        resources :users
+        resources :users, only: [:index, :show, :update, :delete]
       end
     end
   end
