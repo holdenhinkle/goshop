@@ -31,6 +31,7 @@ gem 'money-rails', '~> 1.13', '>= 1.13.3'
 gem 'acts_as_tenant', '~> 0.5.0'
 gem 'devise', '~> 4.8'
 gem 'devise-jwt', '~> 0.8.1'
+gem 'email_address', '~> 0.1.20'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
