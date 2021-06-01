@@ -170,6 +170,36 @@ ALTER SEQUENCE public.friendly_id_slugs_id_seq OWNED BY public.friendly_id_slugs
 
 
 --
+-- Name: jwt_denylist; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.jwt_denylist (
+    id bigint NOT NULL,
+    jti character varying NOT NULL,
+    expired_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: jwt_denylist_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.jwt_denylist_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: jwt_denylist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.jwt_denylist_id_seq OWNED BY public.jwt_denylist.id;
+
+
+--
 -- Name: product_categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -224,10 +254,47 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users (
+    email character varying DEFAULT ''::character varying NOT NULL,
+    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
+    role character varying DEFAULT 'customer'::character varying NOT NULL,
+    first_name character varying,
+    last_name character varying,
+    phone_number character varying,
+    reset_password_token character varying,
+    reset_password_sent_at timestamp without time zone,
+    remember_created_at timestamp without time zone,
+    sign_in_count integer DEFAULT 0 NOT NULL,
+    current_sign_in_at timestamp without time zone,
+    last_sign_in_at timestamp without time zone,
+    current_sign_in_ip inet,
+    last_sign_in_ip inet,
+    confirmation_token character varying,
+    confirmed_at timestamp without time zone,
+    confirmation_sent_at timestamp without time zone,
+    unconfirmed_email character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    account_id uuid
+);
+
+
+--
 -- Name: friendly_id_slugs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.friendly_id_slugs ALTER COLUMN id SET DEFAULT nextval('public.friendly_id_slugs_id_seq'::regclass);
+
+
+--
+-- Name: jwt_denylist id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jwt_denylist ALTER COLUMN id SET DEFAULT nextval('public.jwt_denylist_id_seq'::regclass);
 
 
 --
@@ -279,6 +346,14 @@ ALTER TABLE ONLY public.friendly_id_slugs
 
 
 --
+-- Name: jwt_denylist jwt_denylist_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jwt_denylist
+    ADD CONSTRAINT jwt_denylist_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -292,6 +367,14 @@ ALTER TABLE ONLY public.products
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
 --
@@ -400,6 +483,13 @@ CREATE INDEX index_friendly_id_slugs_on_sluggable_type_and_sluggable_id ON publi
 
 
 --
+-- Name: index_jwt_denylist_on_jti; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jwt_denylist_on_jti ON public.jwt_denylist USING btree (jti);
+
+
+--
 -- Name: index_product_categories_on_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -456,6 +546,34 @@ CREATE INDEX index_products_on_type ON public.products USING btree (type);
 
 
 --
+-- Name: index_users_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_account_id ON public.users USING btree (account_id);
+
+
+--
+-- Name: index_users_on_account_id_and_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_account_id_and_email ON public.users USING btree (account_id, email);
+
+
+--
+-- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
+
+
+--
+-- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_reset_password_token ON public.users USING btree (reset_password_token);
+
+
+--
 -- Name: product_categories fk_rails_005b71ca83; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -485,6 +603,14 @@ ALTER TABLE ONLY public.categories
 
 ALTER TABLE ONLY public.component_product_options
     ADD CONSTRAINT fk_rails_5169cfcbe6 FOREIGN KEY (product_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: users fk_rails_61ac11da2b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_61ac11da2b FOREIGN KEY (account_id) REFERENCES public.accounts(id);
 
 
 --
@@ -596,6 +722,13 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210523220223'),
 ('20210523221936'),
 ('20210524102727'),
-('20210524103750');
+('20210524103750'),
+('20210529183654'),
+('20210529191233'),
+('20210529220556'),
+('20210529222109'),
+('20210530161428'),
+('20210530182643'),
+('20210530183022');
 
 
